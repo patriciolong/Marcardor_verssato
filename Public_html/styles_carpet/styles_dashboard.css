@@ -1,0 +1,132 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden; 
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #D2E0E0 ;
+}
+
+/* Nav design */
+
+#nav {
+    background-color: #000E1F ;
+    width: 15%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#menu_logo {  
+    color: white;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    letter-spacing: normal;
+    font-size: 2rem;
+    margin: 10% 0 0 0;
+}
+
+#Menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#option_nav ul {
+    padding: 0;
+    margin: 0;
+}
+
+#option_nav ul li {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    justify-content: center;
+    margin: 0 0 5% 0;
+}
+
+#option_nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    letter-spacing: normal;
+    font-size: 1.5rem;
+}
+
+.nav_icon {
+    justify-content: center;
+    width: auto;
+    height: 2.5rem;
+    margin: 0 15px 10px 0;
+}
+
+
+#option_nav ul li:hover {
+    cursor: pointer;
+    color: rgb(112, 247, 247);
+    background-color: rgb(10, 119, 119);
+    
+}
+
+/* Username design */
+
+#username {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    width: 100%;
+    height: 15%;
+    position: absolute;
+    top: 0;
+    z-index: -1;
+}
+
+#clockin_icon {
+    width: 15rem;
+    height: auto;
+    margin-left: 20%;
+}
+
+#username_text {
+    color: black;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    letter-spacing: normal;
+    font-size: 2rem;
+    margin-left: auto;
+    padding-right: 5%;
+}
+
+/* Welcome text design */
+
+#welcome {
+    font-size: 20px;
+    margin: 10% 0 0 20%;
+}
+
+#welcome_text {
+    color: black;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-stretch: normal;
+    letter-spacing: normal;
+    font-size: 3rem;
+}
+
+
