@@ -1,0 +1,303 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Header principal */
+.main-header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.app-title {
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+/* Navegación principal */
+.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.main-nav ul li {
+    position: relative; /* Necesario para el dropdown */
+    margin-left: 20px;
+}
+
+.main-nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    display: block;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.main-nav ul li a:hover {
+    background-color: #555;
+}
+
+/* Dropdown */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #444;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1; /* Asegura que se muestre sobre otros elementos */
+    border-radius: 4px;
+    top: 100%; /* Coloca el dropdown justo debajo del elemento padre */
+    left: 0; /* Alinea a la izquierda del elemento padre */
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #666;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Estilo para el contenido principal de las páginas */
+.main-content {
+    padding: 20px;
+    max-width: 960px;
+    margin: 20px auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Estilos para los mensajes de error/éxito */
+.error-message {
+    color: red;
+    background-color: #ffe6e6;
+    border: 1px solid red;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.success-message {
+    color: green;
+    background-color: #e6ffe6;
+    border: 1px solid green;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Estilos de botones y formularios (existentes y nuevos) */
+.button-group {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px; /* Espacio entre botones */
+    margin-top: 20px;
+}
+.button-group button {
+    flex: 1; /* Para que ocupen el espacio disponible equitativamente */
+    padding: 15px 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+}
+.button-group button.btn-entrada { background-color: #28a745; }
+.button-group button.btn-entrada:hover { background-color: #218838; }
+.button-group button.btn-salida { background-color: #dc3545; }
+.button-group button.btn-salida:hover { background-color: #c82333; }
+.logout-link { margin-top: 20px; display: block; color: #007bff; text-decoration: none; }
+.logout-link:hover { text-decoration: underline; }
+
+/* Estilos específicos de marcar.php */
+.camera-container { position: relative; width: 100%; max-width: 400px; margin: 20px auto; }
+video { width: 100%; max-width: 400px; border-radius: 8px; background-color: #000; }
+canvas { position: absolute; top: 0; left: 0; }
+button#captureButton { background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; margin-top: 20px; }
+button#captureButton:hover { background-color: #0056b3; }
+button:disabled { background-color: #cccccc; cursor: not-allowed; }
+#recognitionStatus { margin-top: 15px; font-weight: bold; color: #333; }
+.return-link { margin-top: 20px; display: block; color: #007bff; text-decoration: none; }
+
+/* Estilos específicos de registrar_empleado.php */
+.form-group { margin-bottom: 15px; text-align: left; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: calc(100% - 22px); /* Ajuste para padding y borde */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.form-group button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+.form-group button:hover { background-color: #218838; }
+.face-capture-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px dashed #ccc;
+    padding: 20px;
+    border-radius: 8px;
+}
+.face-capture-container video {
+    width: 100%;
+    max-width: 320px; /* Más pequeño para el registro */
+    border-radius: 8px;
+    background-color: #000;
+}
+.face-capture-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#faceStatus { margin-top: 10px; font-weight: bold; color: #333; }
+
+/* Estilos para login (index.php) */
+.login-container {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    width: 300px;
+    text-align: center;
+    margin: 100px auto; /* Centrar en la página */
+}
+.login-container h2 { margin-bottom: 20px; color: #333; }
+.login-container label { display: block; text-align: left; margin-bottom: 5px; color: #555; }
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    width: calc(100% - 20px); /* Ajuste para padding */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.login-container button:hover { background-color: #0056b3; }
+.table-responsive {
+    overflow-x: auto; /* Permite desplazamiento horizontal en pantallas pequeñas */
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    vertical-align: top; /* Alinea el contenido de las celdas en la parte superior */
+}
+
+table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilos para el formulario de búsqueda */
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.search-form input[type="text"] {
+    flex-grow: 1; /* Ocupa el espacio disponible */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-form button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.search-form button:hover {
+    background-color: #0056b3;
+}
+
+.clear-search-link {
+    color: #dc3545;
+    text-decoration: none;
+    padding: 5px;
+}
+.clear-search-link:hover {
+    text-decoration: underline;
+}
+
+/* Footer (si no lo tienes, puedes agregarlo al style.css) */
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #333;
+    color: white;
+    margin-top: 30px;
+    font-size: 0.9em;
+}
