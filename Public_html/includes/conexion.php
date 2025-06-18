@@ -2,7 +2,7 @@
 $servidor = "localhost";
 $usuario = "root";  
 $contrasena = "";    
-$base_datos = "clockin_db";
+$base_datos = "clockin_dbF";
 
 // Crear conexión
 $conexion = new mysqli($servidor, $usuario, $contrasena, $base_datos);

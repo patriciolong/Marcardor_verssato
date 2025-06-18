@@ -6,17 +6,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/css/dashboard.css">
     <link rel="icon" type="image/png" href="./img/Img_icons/clockIn_icon_head.png">
+    <script defer src="./assets/lib/face-api.min.js"></script>
     <title>ClockIn</title>
 </head>
 <body>
     <?php
     include ("./includes/functions.php");
     include ("./includes/conexion.php");
-    $usuario = obtener_email_usuario($conexion);
+    
     verificarAutentificacion();
-    $rol = $_SESSION['rol'] ?? null; 
+
+    $id_empleado = $_SESSION['id_empleadoSesion'] ?? null; // Asegúrate de que esta variable esté definida
+
+    $usuario = obtener_email_usuario($conexion); // Obtener el email o nombre de usuario
+    $rol = $_SESSION['rol'] ?? null;
+    
     ?>
 
     <!-- Funciones para los Admin -->
@@ -66,6 +71,22 @@
      
     <!-- Funciones para los Usuarios -->
     <?php if($rol === 'user'): ?>
+        <?php 
+        $datosFacialesJSON = $_SESSION['datos_facialesSesion'] ?? null;
+    
+        if ($datosFacialesJSON) {
+                // Decodificar el JSON a un array
+        $datosFacialesDecodificados = json_decode($datosFacialesJSON, true);
+
+        // Acceder a los datos faciales
+    } else {
+        echo "<script>
+        alert('Acceso denegado. No existen datos faciales registrados.');
+        window.location.href = 'login.php';
+    </script>";
+    exit(); // Detiene la ejecución del script
+    }
+        ?>
         <link rel="stylesheet" href="./assets/css/dashboard_user.css">
 
         <div id="username">
@@ -83,7 +104,7 @@
 
         <div id="botones">
             <button class="boton_marcacion" onclick="ModalManager.open('ventana_ME')">Marcar Entrada</button>
-            <button class="boton_marcacion" onclick="ModalManager.open('ventana_MS')">Marcar Salida</button>
+            <button class="boton_marcacion" onclick="ModalManager.open('ventana_ME')">Marcar Salida</button>
             <button class="boton_cerrar_sesion_user" onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
         
@@ -93,33 +114,36 @@
                 <span class="close" onclick="ModalManager.close('ventana_ME')">&times;</span>
                 <h2 class="ventana_ME_text">Marcar Entrada</h2>
                 <div class="camera-container">
-                    <video id="video" width="640" height="480" autoplay muted></video>
+                    <video id="video" width="500" height="300" autoplay muted playsinline></video>
+                    <canvas id="canvas" style="display: block;"></canvas>
                 </div>
-                <div id="message"></div>
+                <p id="recognitionStatus">Cargando modelos de reconocimiento facial...</p>
+
+                <button type="button" id="captureFaceBtn" disabled>Marcar</button>
                 <div class="button-container">
-                    <button id="startBtn" onclick="startCamera()">Iniciar Cámara</button>
-                    <button id="closeBtn" onclick="ModalManager.close('ventana_ME')">Cerrar</button>
                 </div>
             </div>
         </div>
 
         <!-- Modal para Marcar Salida -->
-        <div id="ventana_MS" class="modal">
+        <div id="ventana_M" class="modal">
             <div class="modal-content">
-                <span class="close" onclick="ModalManager.close('ventana_MS')">&times;</span>
-                <h2 class="ventana_ME_text">Marcar Salida</h2>
+                <span class="close" onclick="ModalManager.close('ventana_M')">&times;</span>
+                <h2 class="ventana_M_text">Marcar Salida</h2>
                 <div class="camera-container">
-                    <video id="video_salida" width="640" height="480" autoplay muted></video>
+                    <video id="video" width="500" height="300" autoplay muted playsinline></video>
+                    <canvas id="canvas" style="display: block;"></canvas>
                 </div>
-                <div id="message_salida"></div>
+                <p id="recognitionStatus">Cargando modelos de reconocimiento facial...</p>
+
+                <button type="button" id="captureFaceBtn" disabled>Marcar</button>
                 <div class="button-container">
-                    <button id="startBtn_salida" onclick="startCamera('salida')">Iniciar Cámara</button>
-                    <button id="closeBtn_salida" onclick="ModalManager.close('ventana_MS')">Cerrar</button>
                 </div>
             </div>
         </div>
     <?php endif; ?>
         
+
     <script>
         let stream = null;
         let currentModal = null;
@@ -131,6 +155,7 @@
                 if (modal) {
                     modal.style.display = "flex";
                     currentModal = modalId;
+                    startCamera();
                 }
             },
             close(modalId) {
@@ -143,6 +168,7 @@
                 }
             }
         };
+        
 
         // Función para cerrar sesión
         function cerrarSesion() {
@@ -173,6 +199,10 @@
             menuButton.style.display = 'block';
         }
 
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
         // Cerrar menú al hacer clic fuera de él
         document.addEventListener('click', function(event) {
             const nav = document.getElementById('nav');
@@ -185,98 +215,144 @@
             }
         });
 
-        // Función para iniciar la cámara
-        async function startCamera(tipo = 'entrada') {
-            try {
-                // Determinar qué elementos usar según el tipo
-                const video = tipo === 'salida' ? 
-                    document.getElementById('video_salida') : 
-                    document.getElementById('video');
-                const message = tipo === 'salida' ? 
-                    document.getElementById('message_salida') : 
-                    document.getElementById('message');
-                const startBtn = tipo === 'salida' ? 
-                    document.getElementById('startBtn_salida') : 
-                    document.getElementById('startBtn');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const embeddingGuardado = <?php echo json_encode($datosFacialesDecodificados); ?>;
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            const captureFaceBtn = document.getElementById('captureFaceBtn');
+            const faceStatus = document.getElementById('recognitionStatus');;
 
-                // Solicitar acceso a la cámara
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                    },
-                    audio: false
-                });
 
-                // Asignar el stream al elemento video
-                video.srcObject = stream;
-                
-                // Actualizar controles
-                if (startBtn) {
-                    startBtn.disabled = true;
-                    startBtn.textContent = 'Cámara Activa';
+            let currentStream;
+
+            const MODEL_URL = './models';
+
+            Promise.all([
+                faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+                faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+                faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+                faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+                faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
+                captureFaceBtn.disabled = false
+            ]).then(() => {
+                faceStatus.innerText = "Presione marcar para iniciar";
+                captureFaceBtn.disabled = false;
+            }).catch(err => {
+                console.error('Error al cargar los modelos de Face-API.js:', err);
+                faceStatus.innerText = 'Error: No se pudieron cargar los modelos.';
+                captureFaceBtn.disabled = true;
+            });
+
+            window.startCamera = async () => {
+                if (currentStream) return;
+                try {
+                    currentStream = await navigator.mediaDevices.getUserMedia({ video: { width: 500, height: 300 } });
+                   video.srcObject = currentStream;
+                    await new Promise(resolve => video.onloadedmetadata = resolve);
+                    video.play();
+          // Ajustar canvas tamaño igual que video visual
+                    canvas.width = video.clientWidth;
+                    canvas.height = video.clientHeight;
+
+                    faceStatus.innerText = "Cámara lista. Pulse Marcar.";
+                } catch (err) {
+                    console.error("Error al acceder a la cámara:", err);
+                    faceStatus.innerText = "Error: No se pudo acceder a la cámara.";
+                    captureFaceBtn.disabled = true;
                 }
-                
-                if (message) {
-                    message.innerHTML = '<span style="color: green;">¡Cámara iniciada correctamente!</span>';
+            };
+
+            window.stopCamera = () => {
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                    video.srcObject = null;
+                    currentStream = null;
+                    faceDescriptorInput.value = '';
+                    faceStatus.innerText = "Cámara detenida.";
                 }
-                
-            } catch (error) {
-                console.error('Error al acceder a la cámara:', error);
-                
-                let errorMsg = 'Error al acceder a la cámara: ';
-                
-                switch(error.name) {
-                    case 'NotAllowedError':
-                        errorMsg += 'Permisos denegados. Por favor, permite el acceso a la cámara.';
-                        break;
-                    case 'NotFoundError':
-                        errorMsg += 'No se encontró ninguna cámara.';
-                        break;
-                    case 'NotReadableError':
-                        errorMsg += 'La cámara está siendo usada por otra aplicación.';
-                        break;
-                    default:
-                        errorMsg += error.message;
+            };
+
+    captureFaceBtn.addEventListener('click', async () => {
+    if (!video.srcObject) {
+        faceStatus.innerText = "Error: La cámara no está activa.";
+        return;
+    }
+    await startFaceR();
+                    async function startFaceR() {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    faceStatus.innerText = "Procesando... Detectando rostro...";
+
+     let fullDetections = await faceapi.detectAllFaces(video, new faceapi.SsdMobilenetv1Options())
+            .withFaceLandmarks()
+            .withFaceExpressions()
+            .withFaceDescriptors();
+
+        const dims = faceapi.matchDimensions(canvas, video, true);
+        const resizedDetections = faceapi.resizeResults(fullDetections, dims);
+
+        if (resizedDetections.length > 0) {
+            const descriptorActual = resizedDetections[0].descriptor;
+            const expressions = resizedDetections[0].expressions;
+
+            let bocaAbierta = false;
+            let reconocimiento = false;
+            const isMouthOpen = expressions.mouthOpen > 0.5 || expressions.surprised > 0.5;
+            const requiredOpenTime = 1000; // 2 segundos
+            let mouthOpenTime = 0;
+            faceStatus.innerText = "Rostro reconocido. Abre la boca por 2 segundos para marcar";
+
+            await delay(1000);
+            const checkMouthOpen = setInterval(() => {
+                if (isMouthOpen) {
+                    mouthOpenTime += 100; // Incrementar el tiempo en 100 ms
+                    if (mouthOpenTime >= requiredOpenTime) {
+                        clearInterval(checkMouthOpen);
+                        bocaAbierta = true;
+                    }
+                } else {
+                    mouthOpenTime = 0; // Reiniciar si la boca no está abierta
+                    clearInterval(checkMouthOpen);
                 }
-                
-                const message = tipo === 'salida' ? 
-                    document.getElementById('message_salida') : 
-                    document.getElementById('message');
-                    
-                if (message) {
-                    message.innerHTML = `<span style="color: red;">${errorMsg}</span>`;
-                }
+            }, 100); // Verificar cada 100 ms
+
+            const distancia = faceapi.euclideanDistance(new Float32Array(embeddingGuardado), descriptorActual);
+
+            if (distancia < 0.6) {
+                reconocimiento = true;
             }
-        }
 
-        // Función para detener la cámara
-        function stopCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => {
-                    track.stop();
-                });
-                stream = null;
-                
-                // Resetear botones
-                const startBtn = document.getElementById('startBtn');
-                const startBtn_salida = document.getElementById('startBtn_salida');
-                
-                if (startBtn) {
-                    startBtn.disabled = false;
-                    startBtn.textContent = 'Iniciar Cámara';
-                }
-                if (startBtn_salida) {
-                    startBtn_salida.disabled = false;
-                    startBtn_salida.textContent = 'Iniciar Cámara';
-                }
-            }
-        }
+            // Esperar a que el intervalo termine
+            setTimeout(() => {
+                clearInterval(checkMouthOpen); // Asegurarse de que el intervalo se detenga
 
-        // Limpiar stream al cerrar la ventana
-        window.addEventListener('beforeunload', function() {
-            stopCamera();
+                if (bocaAbierta && reconocimiento) {
+                    faceStatus.innerText = "¡Éxito! Rostro capturado y boca abierta.";
+                    faceStatus.style.color = "green";
+                    captureFaceBtn.disabled = false;
+                    window.stopCamera();
+                    window.location.href = "dashboard.php";
+                } else {
+                    faceStatus.innerText = "No se reconoció la cara o la boca no está abierta. Intente de nuevo.";
+                    faceStatus.style.color = "red";
+                }
+            }, requiredOpenTime); // Esperar el tiempo requerido para verificar si la boca estuvo abierta
+        } else {
+            faceStatus.innerText = "No se detectó ningún rostro. Intente de nuevo.";
+            faceStatus.style.color = "red";
+        }
+    }
+
+
+    
+});
+
         });
+
+        
     </script>
 </body>
 </html>

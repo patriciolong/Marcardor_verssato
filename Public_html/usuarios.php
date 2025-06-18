@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
@@ -10,18 +9,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="./img/Img_icons/clockIn_icon_head.png">
     <link rel="stylesheet" href="./assets/css/usuarios.css">
+    <script defer src="./assets/lib/face-api.min.js"></script>
     <title>Usuarios</title>
 </head>
 <body>
     <?php
     include ("./includes/functions.php");
     include ("./includes/conexion.php");
+    verificarAutentificacion(); 
     $usuario = obtener_email_usuario($conexion);
-    verificarAutentificacion();
     ?>
 
     <div id="menu_boton" onclick="toggleMenu()">
-            <img src="./img/Img_icons/menu_icon.png" alt="">
+        <img src="./img/Img_icons/menu_icon.png" alt="Abrir Menú">
     </div>
 
     <div id="nav">
@@ -30,31 +30,26 @@
         </div>
         <nav id="option_nav"><ul>
             <li id="nav_usuarios">
-                <img class="nav_icon" src="./img/Img_icons/users.png"><a href="./usuarios.php"><p>Usuarios</p></a>
+                <img class="nav_icon" src="./img/Img_icons/users.png" alt="Icono Usuarios"><a href="./usuarios.php"><p>Usuarios</p></a>
             </li>
             <li>
-                <img class="nav_icon" src="./img/Img_icons/reporteria.png"><a href="./reporteria.php"><p>Reporteria</p></a>
+                <img class="nav_icon" src="./img/Img_icons/reporteria.png" alt="Icono Reportería"><a href="./reporteria.php"><p>Reporteria</p></a>
             </li>
         </ul></nav>
 
         <div id="logout_section">
-                <button class="boton_cerrar_sesion" onclick="cerrarSesion()">
+            <button class="boton_cerrar_sesion" onclick="cerrarSesion()">
                 <span>Cerrar Sesión -></span>
-                </button>
+            </button>
         </div>
     </div>
-
     <div id="username">
-        <img id="clockin_icon" src="./img/Img_backgrounds/ClockIN.png">
+        <img id="clockin_icon" src="./img/Img_backgrounds/ClockIN.png" alt="Logo ClockIN">
         <?php
         if ($usuario) {
             echo '<p id="username_text">' . htmlspecialchars($usuario) . '</p>';
         }
         ?>
-    </div>
-
-    <div id="usuarios">
-        <h1 id="usuarios_text">Usuarios</h1>
     </div>
 
     <div id="buscador">
@@ -66,204 +61,226 @@
 
     <div id="caja_usuarios">
         <div id="crearUsuario">
-        <button id="boton_crearUsuario" onclick="ModalManager.open('ventana_crearUsuario')">Crear Usuario</button>
+            <button id="boton_crearUsuario" onclick="ModalManager.open('ventana_crearUsuario')">Crear Usuario</button>
+        </div>
     </div>
-    </div>
-    
-
-    
 
     <div id="ventana_crearUsuario" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="ModalManager.close('ventana_crearUsuario')">&times;</span>
-                <h2 class="ventana_text">Crear Usuario</h2>
-                <form action="./includes/functions.php" method="POST">
+        <div class="modal-content">
+            <span class="close" onclick="ModalManager.close('ventana_crearUsuario')">&times;</span>
+            <h2 class="ventana_text">Crear Usuario</h2>
+            
+            <form action="./includes/functions.php" method="POST">
+                <div id="modal_container">
                     <div id="creacion_datosFaciales">
                         <div class="camera-container">
-                        <video id="video" width="640" height="480" autoplay muted></video>
-
-                        <div class="button-container">
-                            <button id="startBtn" onclick="startCamera()">Iniciar Cámara</button>
-                            <button id="closeBtn" onclick="ModalManager.close('ventana_ME')">Cerrar</button>
+                            <video id="video" width="500" height="300" autoplay muted playsinline></video>
+                            <canvas id="canvas" style="display: none;"></canvas>
+                            <p id="faceStatus">Cargando modelos de reconocimiento facial...</p>
+                            <div class="button-container">
+                                <button type="button" id="captureFaceBtn" disabled>Capturar Rostro</button>
+                            </div>
                         </div>
                     </div>
 
-                    </div>
                     <div id="ingreso_de_datos">
                         <label for="nombre">Nombre:</label>
-                        <input type="text" name="nombre" id="nombre" required>
+                        <input type="text" name="nombre" id="nombre" required placeholder="Ingrese el nombre completo">
+                        
                         <label for="correo">Correo:</label>
-                        <input type="email" name="correo" id="correo" required>
-                        <label for="local">Local</label>
-                        <input type="text" name="local" id="local" required>
-                        <label for="rol">Rol: </label>
+                        <input type="email" name="correo" id="correo" required placeholder="ejemplo@correo.com">
+                        
+                        <label for="local">Local:</label>
+                        <select name="local" id="local" required>
+                            <option value="">Seleccione un local</option>
+                            <option value="local1">Mall del Rio</option>
+                            <option value="local2">Centro</option>
+                            <option value="sedeAdmins">Sede Administrativa</option>
+                        </select>
+                        
+                        <label for="rol">Rol:</label>
                         <select name="rol" id="rol" required>
-                        <option value="Administrador">Administrador</option>
-                        <option value="Empleado">Empleado</option>
+                            <option value="">Seleccione un rol</option>
+                            <option value="Administrador">Administrador</option>
+                            <option value="Empleado">Empleado</option>
                         </select>
-                        <label for="contrasena">Contraseña:</label>
-                        <input type="password" name="contrasena" id="contrasena" required>
-                        <input type="submit" value="Crear Usuario">
-                        <label for="estado">Estado: </label>
+
+                        <label for="estado">Estado:</label>
                         <select name="estado" id="estado" required>
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
+                            <option value="">Seleccione el estado</option>
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
                         </select>
+                        
+                        <label for="contrasena">Contraseña:</label>
+                        <input type="password" name="contrasena" id="contrasena" required placeholder="Mínimo 8 caracteres">
+                        
+                        <input type="hidden" name="datos_faciales" id="datos_faciales">
+                        
+                        <input type="submit" value="Crear Usuario">
                     </div>
-                    
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
+    </div>
 
-    <div i></div>
-
-        <script>
-            async function startCamera(tipo = 'entrada') {
-            try {
-                // Determinar qué elementos usar según el tipo
-                const video = tipo === 'salida' ? 
-                    document.getElementById('video_salida') : 
-                    document.getElementById('video');
-                const message = tipo === 'salida' ? 
-                    document.getElementById('message_salida') : 
-                    document.getElementById('message');
-                const startBtn = tipo === 'salida' ? 
-                    document.getElementById('startBtn_salida') : 
-                    document.getElementById('startBtn');
-
-                // Solicitar acceso a la cámara
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                    },
-                    audio: false
-                });
-
-                // Asignar el stream al elemento video
-                video.srcObject = stream;
-                
-                // Actualizar controles
-                if (startBtn) {
-                    startBtn.disabled = true;
-                    startBtn.textContent = 'Cámara Activa';
-                }
-                
-                if (message) {
-                    message.innerHTML = '<span style="color: green;">¡Cámara iniciada correctamente!</span>';
-                }
-                
-            } catch (error) {
-                console.error('Error al acceder a la cámara:', error);
-                
-                let errorMsg = 'Error al acceder a la cámara: ';
-                
-                switch(error.name) {
-                    case 'NotAllowedError':
-                        errorMsg += 'Permisos denegados. Por favor, permite el acceso a la cámara.';
-                        break;
-                    case 'NotFoundError':
-                        errorMsg += 'No se encontró ninguna cámara.';
-                        break;
-                    case 'NotReadableError':
-                        errorMsg += 'La cámara está siendo usada por otra aplicación.';
-                        break;
-                    default:
-                        errorMsg += error.message;
-                }
-                
-                const message = tipo === 'salida' ? 
-                    document.getElementById('message_salida') : 
-                    document.getElementById('message');
-                    
-                if (message) {
-                    message.innerHTML = `<span style="color: red;">${errorMsg}</span>`;
-                }
+    <div id="usuarios_container">
+        <div id="usuarios_lista">
+            <?php
+            $query = "SELECT nombre, rol, estado, password, email, local FROM empleados";
+            $result = $conexion->query($query);
+            if ($result) {
+                while ($row = $result->fetch_assoc()): ?>
+                    <div class="usuario_card">
+                        <h3><?php echo htmlspecialchars($row['nombre']); ?></h3>
+                        <p><strong>Rol:</strong> <?php echo htmlspecialchars($row['rol']); ?></p>
+                        <p><strong>Estado:</strong> <?php echo htmlspecialchars($row['estado']); ?></p>
+                        <p><strong>Contraseña:</strong> <?php echo htmlspecialchars($row['password']); ?></p>
+                        <p><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
+                        <p><strong>Local:</strong> <?php echo htmlspecialchars($row['local']); ?></p>
+                    </div>
+                <?php endwhile;
             }
-        }
+            ?>
+        </div>
+    </div>
 
-        // Función para detener la cámara
-        function stopCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => {
-                    track.stop();
-                });
-                stream = null;
-                
-                // Resetear botones
-                const startBtn = document.getElementById('startBtn');
-                const startBtn_salida = document.getElementById('startBtn_salida');
-                
-                if (startBtn) {
-                    startBtn.disabled = false;
-                    startBtn.textContent = 'Iniciar Cámara';
-                }
-                if (startBtn_salida) {
-                    startBtn_salida.disabled = false;
-                    startBtn_salida.textContent = 'Iniciar Cámara';
-                }
-            }
-        }
-            const ModalManager = {
+    <script>
+        // --- GESTIÓN DEL MENÚ Y MODAL ---
+        const ModalManager = {
             open(modalId) {
                 const modal = document.getElementById(modalId);
                 if (modal) {
                     modal.style.display = "flex";
-                    currentModal = modalId;
+                    startCamera(); // Iniciar la cámara al abrir el modal
                 }
             },
             close(modalId) {
                 const modal = document.getElementById(modalId);
                 if (modal) {
                     modal.style.display = "none";
-                    // Detener la cámara al cerrar el modal
-                    stopCamera();
-                    currentModal = null;
+                    stopCamera(); // Detener la cámara al cerrar el modal
                 }
             }
-            };
+        };
 
-            function cerrarSesion() {
+        function cerrarSesion() {
             if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
                 window.location.href = './includes/logout.php';
             }
-            }
-        
-            function toggleMenu() {
-                const nav = document.getElementById('nav');
-                const menuButton = document.getElementById('menu_boton');
-    
-            // Toggle del menú
+        }
+
+        function toggleMenu() {
+            const nav = document.getElementById('nav');
+            const menuButton = document.getElementById('menu_boton');
             nav.classList.toggle('open');
-    
-            // Ocultar/mostrar botón según estado del menú
-            if (nav.classList.contains('open')) {
-                menuButton.style.display = 'none'; // Ocultar botón cuando menú está abierto
-            } else {
-                menuButton.style.display = 'block'; // Mostrar botón cuando menú está cerrado
-            }
-            }
+            menuButton.style.display = nav.classList.contains('open') ? 'none' : 'block';
+        }
 
-            function closeMenu() {
-                const nav = document.getElementById('nav');
-                const menuButton = document.getElementById('menu_boton');
-    
-                nav.classList.remove('open');
-                menuButton.style.display = 'block'; // Mostrar botón nuevamente
-            }
+        function closeMenu() {
+            const nav = document.getElementById('nav');
+            const menuButton = document.getElementById('menu_boton');
+            nav.classList.remove('open');
+            menuButton.style.display = 'block';
+        }
 
-            // Cerrar menú al hacer clic fuera de él
-            document.addEventListener('click', function(event) {
-                const nav = document.getElementById('nav');
-                const menuButton = document.getElementById('menu_boton');
-    
-                // Si el menú está abierto y el clic no fue dentro del menú ni en el botón
-                if (nav.classList.contains('open') && 
-                    !nav.contains(event.target) && 
-                    !menuButton.contains(event.target)) {
-                    closeMenu();
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('nav');
+            const menuButton = document.getElementById('menu_boton');
+            if (nav.classList.contains('open') && !nav.contains(event.target) && !menuButton.contains(event.target)) {
+                closeMenu();
+            }
+        });
+
+        // --- LÓGICA DE RECONOCIMIENTO FACIAL ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            const captureFaceBtn = document.getElementById('captureFaceBtn');
+            const faceStatus = document.getElementById('faceStatus');
+            const faceDescriptorInput = document.getElementById('datos_faciales');
+            const createUserForm = document.querySelector('#ventana_crearUsuario form'); // Selector más específico
+            let currentStream;
+
+            const MODEL_URL = './models';
+
+            Promise.all([
+                faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+                faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+                faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+            ]).then(() => {
+                faceStatus.innerText = "Modelos cargados. Puede iniciar la cámara.";
+                captureFaceBtn.disabled = false;
+            }).catch(err => {
+                console.error('Error al cargar los modelos de Face-API.js:', err);
+                faceStatus.innerText = 'Error: No se pudieron cargar los modelos.';
+                captureFaceBtn.disabled = true;
+            });
+
+            window.startCamera = async () => {
+                if (currentStream) return;
+                try {
+                    faceStatus.innerText = "Iniciando cámara...";
+                    faceStatus.style.color = "inherit"; // Reset color
+                    currentStream = await navigator.mediaDevices.getUserMedia({ video: {} });
+                    video.srcObject = currentStream;
+                    video.addEventListener('loadedmetadata', () => {
+                        faceStatus.innerText = "Cámara lista. Pulse 'Capturar Rostro'.";
+                    });
+                } catch (err) {
+                    console.error("Error al acceder a la cámara:", err);
+                    faceStatus.innerText = "Error: No se pudo acceder a la cámara.";
+                    captureFaceBtn.disabled = true;
+                }
+            };
+
+            window.stopCamera = () => {
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                    video.srcObject = null;
+                    currentStream = null;
+                    faceDescriptorInput.value = '';
+                    faceStatus.innerText = "Cámara detenida.";
+                }
+            };
+
+            captureFaceBtn.addEventListener('click', async () => {
+                if (!video.srcObject) {
+                    faceStatus.innerText = "Error: La cámara no está activa.";
+                    return;
+                }
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                faceStatus.innerText = "Procesando... Detectando rostro...";
+
+                const detections = await faceapi.detectSingleFace(canvas, new faceapi.TinyFaceDetectorOptions())
+                                                .withFaceLandmarks()
+                                                .withFaceDescriptor();
+
+                if (detections) {
+                    const descriptorArray = Array.from(detections.descriptor);
+                    faceDescriptorInput.value = JSON.stringify(descriptorArray);
+                    faceStatus.innerText = "¡Éxito! Rostro capturado.";
+                    faceStatus.style.color = "green";
+                } else {
+                    faceDescriptorInput.value = '';
+                    faceStatus.innerText = "No se detectó ningún rostro. Intente de nuevo.";
+                    faceStatus.style.color = "red";
                 }
             });
+
+            createUserForm.addEventListener('submit', (e) => {
+                if (!faceDescriptorInput.value) {
+                    faceStatus.innerText = "Por favor, capture un rostro antes de registrar.";
+                    faceStatus.style.color = "red";
+                    e.preventDefault();
+                }
+            });
+
+            
+        });
     </script>
 </body>
 </html>

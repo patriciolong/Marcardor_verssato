@@ -82,6 +82,10 @@ body{
     font-size: 1.5rem;
 }
 
+#nav_usuarios{
+    background-color:  rgb(10, 119, 119);
+}
+
 .nav_icon {
     justify-content: center;
     width: auto;
@@ -178,10 +182,12 @@ body{
     font-stretch: normal;
     letter-spacing: normal;
     font-size: 3rem;
+
 }
 
 /* Buscador design */
 #buscador {
+    margin-top: 10%;
     height: 20%;
     margin-left: 20%;
 }
@@ -207,154 +213,193 @@ body{
     position: fixed;
 }
 
-/* Caja de los uasuario */
-
-#caja_usuarios {
-    position:fixed;
-    top: 40%;
-    bottom: 5%;
-    left: 20%;
-    right: 5%;
-    background-color: white;
-}
-
-/* Boton de crear usuario*/
-
-#crearUsuario{
-    margin-left: 20%;
-}
-
+/* Modal styles mejorados */
 .modal {
     display: none; 
     position: fixed;
     z-index: 1000;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0);
-
+    
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px); 
 }
 
 .modal-content {
-    background-color: #000E1F;
+    background: linear-gradient(135deg, #000E1F 0%, #001a33 100%);
     border-radius: 20px; 
-    width: 85%;
-    height: 85%;
-    margin: auto;
-     
+    width: 90%;
+    max-width: 1200px;
+    height: auto;
+    margin: auto auto;
     color: rgb(255, 255, 255);
-    box-shadow: 0 0 40px 5px #000000;
-
+    box-shadow: 0 0 40px 5px rgba(0, 0, 0, 0.5);
     position: relative;
     font-family: "Inter", sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-    font-stretch: normal;
-    letter-spacing: normal;
-    font-size: 2.5rem;    
-    text-align: center;
-    text-wrap: balance;
+    border: 2px solid rgba(112, 247, 247, 0.2);
+    display: flex;
+    flex-direction: column;
 }
 
 .close {
     color: #ffffff; 
     float: right; 
     font-size: 30px; 
-
     font-weight: bold; 
     cursor: pointer; 
     position: absolute;
-    right: 15px; 
-    top: 5px; 
+    right: 20px; 
+    top: 15px; 
+    z-index: 1001;
+    transition: color 0.3s ease;
 }
 
+.close:hover {
+    color: rgb(112, 247, 247);
+}
 
-@media screen and (max-width: 600px) {
-    #menu_boton {
-        display: block;
-        z-index: 2000;
-        margin: 8% 0 0 0;
-        right: 5%;
-    }
+.ventana_text {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin: 20px 0;
+    color: rgb(255, 255, 255);
+}
 
-    #menu_boton img {
-        width: 30px;
-        height: auto;
-    }
-    
-    #nav {
-        position: fixed;
-        top: 0;
-        right: -100% !important;
-        left: auto !important;
-        width: 60%;
-        height: 100%;
-        background-color: #000E1F;
-        transition: right 0.3s ease-in-out;
-        z-index: 1500;
-        display: flex;
-        flex-direction: column;
-    }
+/* Contenedor principal del modal - layout horizontal */
+#modal_container {
+    display: flex;
+    flex: 1;
+    gap: 30px;
+    padding: 20px;
+    height: calc(100% - 120px);
+}
 
-    #nav.open {
-        right: 0% !important;
-    }
+/* Sección de la cámara - lado izquierdo */
+#creacion_datosFaciales {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+}
 
-    /* Mantener estructura flexbox en móvil */
-    #option_nav {
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        justify-content: space-between;
-    }
+.camera-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    border-radius: 10px;
+}
 
-    #logout_section {
-        padding: 15px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        flex-shrink: 0;
-        margin-top: auto;
-    }
+#video {
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(112, 247, 247, 0.1);
+    max-width: 100%;
+    height: auto;
+}
 
-    #username_text {
-        display: none;
-    }
+.button-container {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 
-    #username {
-        display: flex;
-        align-items: center;
-        background-color: white;
-        width: 100%;
-        height: auto;
-        position: relative;
-        top: 0;
-        z-index: 1;
-    }
+.button-container button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
 
-    #clockin_icon {
-        width: 10rem;
-        height: auto;
-        margin: 5% 0 5% 5%;
-    }
-    
-    #usuarios {
-        margin: 10% 0 15% 5%;
-    }
-    
-    #usuarios_text {
-        color: black;
-        font-family: "Inter", sans-serif;
-        font-optical-sizing: auto;
-        font-weight: 300;
-        font-style: normal;
-        font-stretch: normal;
-        letter-spacing: normal;
-        font-size: 2rem;
-    }
+#startBtn {
+    background: rgb(235, 86, 86);
+    color: #ffffff;
+}
+
+#startBtn:hover {
+    background: linear-gradient(135deg, #ff3742, #ff2731);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+}
+
+/* Sección del formulario - lado derecho */
+#ingreso_de_datos {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(112, 247, 247, 0.2);
+    overflow-y: auto;
+}
+
+#ingreso_de_datos label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: rgb(255, 255, 255);
+    margin-bottom: 5px;
+}
+
+#ingreso_de_datos input,
+#ingreso_de_datos select {
+    padding: 12px 15px;
+    border: 2px solid rgba(112, 247, 247, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+#ingreso_de_datos input:focus,
+#ingreso_de_datos select:focus {
+    outline: none;
+    border-color: rgb(112, 247, 247);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 10px rgba(112, 247, 247, 0.2);
+}
+
+#ingreso_de_datos input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+#ingreso_de_datos select option {
+    background: #000E1F;
+    color: white;
+}
+
+#ingreso_de_datos input[type="submit"] {
+    background: rgb(235, 86, 86);
+    color: #ffffff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+#ingreso_de_datos input[type="submit"]:hover {
+    background: linear-gradient(135deg, #ff3742, #ff2731);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
 }
 
 /* Buscador design */
@@ -383,6 +428,74 @@ body{
     display: none;
     position: fixed;
 }
+
+#caja_usuarios{
+    height: 30%;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 0.5%;
+}
+
+#boton_crearUsuario{
+    background: rgb(235, 86, 86);
+    color: #ffffff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+#boton_crearUsuario:hover {
+    background: linear-gradient(135deg, #ff3742, #ff2731);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+}
+
+/* tabla de usuarios */
+
+#usuarios_container {
+    margin: 20px;
+    padding-top: 10px;
+    background-color:  #D2E0E0;
+    padding-right: 10px;   
+    max-height: 400px; /* Altura máxima para el contenedor */
+    overflow-y: auto; /* Habilitar desplazamiento vertical */
+    margin-left: 20%;
+    margin-right: 5%;
+}
+
+#usuarios_lista {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espacio entre tarjetas de usuario */
+}
+
+.usuario_card {
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-right: 0%;
+    margin-left: 0%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.255);
+}
+
+.usuario_card h3 {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    font-size: 1.5rem;
+    color: #000E1F;
+}
+
+.usuario_card p {
+    margin: 5px 0;
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+}
+
+
 
 @media screen and (max-width: 600px) {
     #menu_boton {

@@ -137,6 +137,16 @@ body{
     margin: 2% 0 2% 0;
 }
 
+   .camera-container {
+       position: relative;
+   }
+   #canvas {
+       position: absolute;
+       top: 0;
+       left: 0;
+       pointer-events: none; /* Para que el canvas no interfiera con los eventos del video */
+   }
+
 @media screen and (max-width: 600px) {
     #username {
         display: flex;
