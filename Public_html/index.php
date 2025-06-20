@@ -14,23 +14,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($email) || empty($password)) {
         $error_message = "Por favor, ingresa tu email y contraseña.";
     } else {
-        // Preparar la consulta para evitar inyecciones SQL
-        $stmt = $mysqli->prepare("SELECT id_empleado, password FROM empleados WHERE email = ?");
+        // Preparar la consulta para evitar inyecciones SQL y seleccionar también el estado
+        $stmt = $mysqli->prepare("SELECT id_empleado, password, estado, rol FROM empleados WHERE email = ?");
         if ($stmt) {
             $stmt->bind_param("s", $email); // 's' porque email es un string
             $stmt->execute();
             $stmt->store_result(); // Almacenar resultados para poder usar num_rows y bind_result
-            $stmt->bind_result($id_empleado, $hashed_password); // Asocia las columnas seleccionadas a estas variables
+            $stmt->bind_result($id_empleado, $hashed_password, $estado, $rol); // Asocia las columnas seleccionadas a estas variables
             $stmt->fetch(); // Obtiene los valores
 
             // Verificar si se encontró un usuario y si la contraseña coincide con el hash
             if ($stmt->num_rows == 1 && password_verify($password, $hashed_password)) {
-                // Autenticación exitosa
-                $_SESSION['id_empleado'] = $id_empleado;
-                $_SESSION['loggedin'] = true;
-                // Redirigir al dashboard
-                header("Location: dashboard.php");
-                exit();
+                // Verificar el estado del empleado
+                if ($estado === 'Activo') { // Asumiendo que 'Activo' es el valor para habilitado
+                    // Autenticación exitosa
+                    $_SESSION['id_empleado'] = $id_empleado;
+                    $_SESSION['rol'] = $rol;
+                    $_SESSION['loggedin'] = true;
+                    // Redirigir al dashboard
+                    header("Location: dashboard.php");
+                    exit();
+                } else {
+                    // Estado inactivo
+                    $error_message = "Tu cuenta está inactiva. Por favor, contacta a tu administrador.";
+                }
             } else {
                 // Credenciales inválidas
                 $error_message = "Email o contraseña inválidos.";
@@ -50,7 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - ClockIn</title>
-    <link rel="stylesheet" href="assets/css/style.css"> </head>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
 <body>
     <div class="login-container">
         <h2>Iniciar Sesión</h2>

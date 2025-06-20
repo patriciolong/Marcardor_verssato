@@ -3,7 +3,10 @@
 
 include 'config.php'; // Incluye el archivo de conexión a la base de datos
 include 'includes/funciones.php'; // Asumo que necesitas funciones.php para algo como verificarAutenticacion si el usuario ya está logueado, o para iniciar/manejar sesión.
-
+verificarAutenticacion(); // Verifica si el usuario está logueado
+if ($_SESSION['rol']== "Empleado") {
+    header("Location: index.php");
+}
 $message = '';
 $message_type = ''; // 'success' o 'error'
 
@@ -12,6 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $apellido = trim($_POST['apellido'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? ''; // No se trimmea porque los espacios podrían ser parte de la contraseña
+    $rol = trim($_POST['rol'] ?? '');
+    $locall = trim($_POST['locall'] ?? '');
+    $estado = trim($_POST['estado'] ?? '');
     $face_descriptor_json = $_POST['face_descriptor'] ?? null; // Obtener el descriptor del input oculto
 
     if (empty($nombre) || empty($apellido) || empty($email) || empty($password) || empty($face_descriptor_json)) {
@@ -26,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Preparar la consulta para insertar el nuevo empleado
         // Asegúrate de que tu columna datos_faciales en la BD sea de tipo JSON o LONGTEXT
-        $stmt = $mysqli->prepare("INSERT INTO empleados (nombre, apellido, email, password, datos_faciales) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $mysqli->prepare("INSERT INTO empleados (nombre, apellido, email, password, datos_faciales,rol,locall,estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         if ($stmt) {
-            $stmt->bind_param("sssss", $nombre, $apellido, $email, $hashed_password, $face_descriptor_json); // Añadido 's' para el descriptor JSON
+            $stmt->bind_param("ssssssss", $nombre, $apellido, $email, $hashed_password, $face_descriptor_json, $rol, $locall, $estado); // Añadido 's' para el descriptor JSON
 
             if ($stmt->execute()) {
                 $message = "¡Empleado registrado con éxito!";
@@ -243,6 +249,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label for="password">Contraseña:</label>
             <input type="password" id="password" name="password" required>
 
+            <select id="rol" name="rol" required>
+            <option >Administrador</option>
+            <option >Empleado</option>
+            </select>
+            <select id="locall" name="locall" required>
+            <option >Centro</option>
+            <option >Bolivar</option>
+            </select>
+            <select id="estado" name="estado" required>
+            <option >Activo</option>
+            <option >Inactivo</option>
+            </select>
+
+
             <button type="submit">Registrar Empleado</button>
         </form>
         <a href="index.php" class="back-link">Volver al Inicio de Sesión</a>
@@ -262,9 +282,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Cargar modelos de face-api.js con la ruta ORIGINAL PROPORCIONADA
             Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri('/Clockin/Marcardor_verssato/Public_html/assets/lib/models'),
-                faceapi.nets.faceLandmark68Net.loadFromUri('/Clockin/Marcardor_verssato/Public_html/assets/lib/models'),
-                faceapi.nets.faceRecognitionNet.loadFromUri('/Clockin/Marcardor_verssato/Public_html/assets/lib/models')
+                faceapi.nets.tinyFaceDetector.loadFromUri('/Clockin2/Marcardor_verssato/Public_html/assets/lib/models'),
+                faceapi.nets.faceLandmark68Net.loadFromUri('/Clockin2/Marcardor_verssato/Public_html/assets/lib/models'),
+                faceapi.nets.faceRecognitionNet.loadFromUri('/Clockin2/Marcardor_verssato/Public_html/assets/lib/models')
             ]).then(() => {
                 faceStatus.innerText = "Modelos cargados. Iniciando cámara...";
                 captureFaceBtn.disabled = false; // Habilitar el botón después de cargar modelos

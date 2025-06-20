@@ -7,17 +7,19 @@ verificarAutenticacion(); // Verifica si el usuario está logueado, si no, redir
 
 // Opcional: Obtener información del empleado logueado para mostrar un saludo
 $nombre_empleado = "Empleado";
+$userRol = "Empleado";
 if (isset($_SESSION['id_empleado'])) {
     $id_empleado_sesion = $_SESSION['id_empleado'];
-    $stmt = $mysqli->prepare("SELECT nombre FROM empleados WHERE id_empleado = ?");
+    $stmt = $mysqli->prepare("SELECT nombre, rol FROM empleados WHERE id_empleado = ?");
     if ($stmt) {
         $stmt->bind_param("i", $id_empleado_sesion);
         $stmt->execute();
-        $stmt->bind_result($nombre_empleado_db);
+        $stmt->bind_result($nombre_empleado_db,$rol_empleado);
         $stmt->fetch();
         $stmt->close();
         if ($nombre_empleado_db) {
             $nombre_empleado = $nombre_empleado_db;
+            $userRol = $rol_empleado;
         }
     }
 }
@@ -41,6 +43,7 @@ if (isset($_GET['error_message'])) {
 
 <div class="main-content">
     <h2>Bienvenido, <?php echo htmlspecialchars($nombre_empleado); ?></h2>
+    <h2><?php echo htmlspecialchars($userRol); ?></h2>
     <p class="welcome-message">Elige tu acción:</p>
 
     <?php if (!empty($error_message)): ?>

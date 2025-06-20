@@ -8,6 +8,7 @@
 // Asumo que verificarAutenticacion() ya se encargó de iniciar la sesión y verificar al usuario.
 
 $nombre_empleado_menu = "Usuario"; // Valor por defecto
+$userRol = "";
 if (isset($_SESSION['id_empleado'])) {
     // Si la conexión a la base de datos no está disponible globalmente,
     // es posible que necesites incluir 'config.php' aquí o pasar $mysqli como parámetro.
@@ -16,15 +17,16 @@ if (isset($_SESSION['id_empleado'])) {
     global $mysqli; // Acceder a la conexión global $mysqli
 
     if (isset($mysqli) && $mysqli instanceof mysqli) {
-        $stmt = $mysqli->prepare("SELECT nombre FROM empleados WHERE id_empleado = ?");
+        $stmt = $mysqli->prepare("SELECT nombre,rol  FROM empleados WHERE id_empleado = ?");
         if ($stmt) {
             $stmt->bind_param("i", $_SESSION['id_empleado']);
             $stmt->execute();
-            $stmt->bind_result($nombre_db);
+            $stmt->bind_result($nombre_db,$rol_empleado);
             $stmt->fetch();
             $stmt->close();
             if ($nombre_db) {
                 $nombre_empleado_menu = htmlspecialchars($nombre_db);
+                $userRol = htmlspecialchars($rol_empleado);
             }
         }
     }
@@ -37,25 +39,23 @@ if (isset($_SESSION['id_empleado'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClockIn - Sistema de Marcación</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    </head>
+</head>
 <body>
-    <header class="main-header">
-        <div class="header-content">
-            <div class="app-title">ClockIn</div>
+    <div class="page-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="app-title">ClockIn</div>
+            </div>
             <nav class="main-nav">
                 <ul>
                     <li><a href="dashboard.php">Inicio</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropbtn">Marcaciones</a>
-                        <div class="dropdown-content">
-                            <a href="marcar.php?tipo=entrada">Marcar Entrada</a>
-                            <a href="marcar.php?tipo=salida">Marcar Salida</a>
-                            <a href="ver_marcaciones.php">Ver Historial</a> </div>
-                    </li>
+                    <?php if ($userRol == 'Administrador'): ?>
+                    <li><a href="ver_marcaciones.php">Ver Historial</a></li>
                     <li><a href="registrar_empleado.php">Registrar Empleado</a></li>
-                    <li><a href="logout.php">Cerrar Sesión (<?php echo $nombre_empleado_menu; ?>)</a></li>
+                    <?php endif; ?>
+                    <li><a href="logout.php">Cerrar Sesión (<?php echo $nombre_empleado_menu; ?>)(<?php echo $userRol; ?>)</a></li>
                 </ul>
             </nav>
-        </div>
-    </header>
-    <main class="main-content">
+        </aside>
+
+        <main class="content-area">

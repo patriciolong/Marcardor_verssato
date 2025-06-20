@@ -4,7 +4,10 @@
 include 'config.php';
 include 'includes/funciones.php';
 verificarAutenticacion(); // Verifica si el usuario está logueado
-
+echo $_SESSION['rol'];
+if ($_SESSION['rol']== "Empleado") {
+    header("Location: index.php");
+}
 $search_query = '';
 $marcaciones = [];
 $error_message = '';
