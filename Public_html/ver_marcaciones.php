@@ -4,7 +4,6 @@
 include 'config.php';
 include 'includes/funciones.php';
 verificarAutenticacion(); // Verifica si el usuario está logueado
-echo $_SESSION['rol'];
 if ($_SESSION['rol']== "Empleado") {
     header("Location: index.php");
 }
@@ -77,9 +76,291 @@ if ($is_ajax_request) {
     exit();
 }
 ?>
-
-
     <?php include 'includes/header.php'; ?>
+
+    <style>
+           /* Estilos para la sección de Registro de Marcaciones */
+
+/* Título principal de la sección */
+.main-content h2 {
+    font-size: 2.5rem; /* Tamaño similar al .containerMarcar h2 */
+    font-weight: 500;
+    color: #0f172a;
+    margin-bottom: 30px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-align: left; /* Alineado a la izquierda como los títulos de contenido */
+    padding-left: 10px; /* Pequeño padding para visualización */
+}
+
+/* Contenedor de la barra de búsqueda y el botón de exportar */
+.search-export-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+    gap: 20px; /* Espacio entre la barra de búsqueda y el botón de exportar */
+    margin-bottom: 30px;
+    align-items: center;
+    justify-content: space-between; /* Distribuye el espacio para alinear a los extremos */
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px 25px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+
+/* Barra de búsqueda */
+.search-bar {
+    display: flex;
+    flex-grow: 1; /* Permite que la barra de búsqueda ocupe el espacio disponible */
+    gap: 10px;
+    align-items: center;
+    max-width: 500px; /* Ancho máximo para la barra de búsqueda */
+}
+
+.search-bar input[type="text"] {
+    flex-grow: 1;
+    padding: 12px 18px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #334155;
+    background-color: #f8fafc;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-bar input[type="text"]::placeholder {
+    color: #94a3b8;
+}
+
+.search-bar input[type="text"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.search-bar button {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8); /* Degradado azul */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.search-bar button:hover {
+    background:  #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.search-bar button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.search-bar a#clearSearchLink {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.search-bar a#clearSearchLink:hover {
+    color: #3b82f6;
+    text-decoration: underline;
+}
+
+/* Botón de exportar */
+.export-button .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #22c55e, #16a34a); /* Degradado verde para exportar */
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+}
+
+.export-button .button::before {
+    content: '📊'; /* Emoji para un look moderno */
+    font-size: 16px;
+}
+
+.export-button .button:hover {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(34, 197, 94, 0.3);
+}
+
+.export-button .button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
+}
+
+/* Mensajes de error */
+.error-message {
+    background-color: #fef2f2;
+    color: #ef4444;
+    padding: 15px 20px;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.08);
+}
+
+/* Contenedor de la tabla (permite desplazamiento horizontal en pantallas pequeñas) */
+.table-container {
+    overflow-x: auto; /* Permite scroll horizontal en la tabla si no cabe */
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08), 0 1px 4px rgba(15, 23, 42, 0.03);
+    padding: 20px;
+}
+
+/* Estilo de la tabla de marcaciones */
+.marcaciones-table {
+    width: 100%;
+    border-collapse: collapse; /* Elimina los espacios entre los bordes de las celdas */
+    min-width: 700px; /* Asegura un ancho mínimo para la tabla en pantallas pequeñas */
+}
+
+.marcaciones-table thead th {
+    background-color: #f1f5f9; /* Fondo de encabezado de tabla */
+    color: #334155;
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 2px solid #e2e8f0;
+    white-space: nowrap; /* Evita que el texto del encabezado se envuelva */
+}
+
+.marcaciones-table tbody td {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #475569;
+    font-size: 14px;
+    white-space: nowrap; /* Evita que el contenido de la celda se envuelva */
+}
+
+.marcaciones-table tbody tr:last-child td {
+    border-bottom: none; /* Elimina el borde inferior de la última fila */
+}
+
+/* Estilo para filas pares (para efecto zebra) */
+.marcaciones-table tbody tr:nth-child(even) {
+    background-color: #fdfdfe; /* Color más claro para filas pares */
+}
+
+.marcaciones-table tbody tr:hover {
+    background-color: #f0f8ff; /* Sutil cambio de color al pasar el mouse */
+}
+
+/* Mensaje de "No hay marcaciones" */
+#noInitialDataMessage td {
+    text-align: center;
+    font-style: italic;
+    color: #64748b;
+    padding: 30px 20px;
+}
+
+/* Estilos responsivos para esta sección */
+@media (max-width: 768px) {
+    .main-content h2 {
+        font-size: 2rem;
+        margin-bottom: 25px;
+        text-align: center; /* Centrar el título en pantallas más pequeñas */
+        padding-left: 0;
+    }
+
+    .search-export-container {
+        flex-direction: column; /* Apila elementos en pantallas más pequeñas */
+        align-items: stretch; /* Estira elementos para ocupar el ancho */
+        padding: 15px 20px;
+        gap: 15px;
+    }
+
+    .search-bar {
+        flex-direction: column; /* Apila input y botones de búsqueda */
+        align-items: stretch;
+        max-width: 100%; /* Ocupa todo el ancho disponible */
+    }
+
+    .search-bar input[type="text"],
+    .search-bar button {
+        width: 100%; /* Hacen que el input y el botón ocupen todo el ancho */
+    }
+
+    .search-bar a#clearSearchLink {
+        text-align: center;
+        margin-top: 5px;
+    }
+
+    .export-button {
+        width: 100%; /* Estira el botón de exportar */
+    }
+
+    .export-button .button {
+        width: 100%;
+        justify-content: center; /* Centra el contenido del botón */
+        padding: 14px 24px;
+        font-size: 14px;
+    }
+
+    .marcaciones-table thead th,
+    .marcaciones-table tbody td {
+        padding: 10px 15px; /* Reduce el padding en celdas de tabla */
+        font-size: 13px; /* Reduce el tamaño de fuente */
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content h2 {
+        font-size: 1.75rem;
+        margin-bottom: 20px;
+    }
+
+    .search-export-container {
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .search-bar input[type="text"],
+    .search-bar button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .export-button .button {
+        padding: 12px 20px;
+        font-size: 13px;
+    }
+
+    .marcaciones-table thead th,
+    .marcaciones-table tbody td {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    /* Asegurar que la tabla siga siendo desplazable horizontalmente */
+    .table-container {
+        padding: 10px;
+    }
+}
+    </style>
 
     <div class="main-content">
         <h2>Registro de Marcaciones</h2>
@@ -140,8 +421,6 @@ if ($is_ajax_request) {
             </table>
         </div>
     </div>
-
-    <?php include 'includes/footer.php'; ?>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -246,4 +525,3 @@ if ($is_ajax_request) {
             updateExportLink();
         });
     </script>
-<?php include 'includes/footer.php'; ?>

@@ -61,167 +61,365 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <?php include 'includes/header.php'; ?>
 
     <style>
-        /* Estilos específicos para el contenedor de registro y sus elementos internos */
-        .register-container {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
-            box-sizing: border-box;
-            margin: 40px auto; /* Centra el contenedor y le da margen superior e inferior */
-            display: flex; /* Para organizar mejor los elementos internos */
-            flex-direction: column;
-            align-items: center;
-        }
+     /* Estilos para el contenedor de registro de empleados */
+.register-container {
+    /* Fondo con un degradado sutil, similar al usado en otros contenedores */
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid #e2e8f0; /* Borde suave */
+    border-radius: 20px; /* Esquinas redondeadas grandes */
+    padding: 40px; /* Espaciado interno generoso */
+    margin: 40px auto; /* Centra el contenedor horizontalmente y añade margen vertical */
+    box-shadow:
+        0 4px 20px rgba(15, 23, 42, 0.1), /* Sombra principal para profundidad */
+        0 1px 4px rgba(15, 23, 42, 0.05); /* Sombra más suave para detalles */
+    width: 100%;
+    max-width: 600px; /* Ancho máximo para el formulario, evitando que sea demasiado grande */
+    text-align: center; /* Centra el contenido textual */
+    position: relative;
+    overflow: hidden; /* Asegura que los bordes redondeados se apliquen al contenido */
+}
 
-        .register-container h2 {
-            margin-bottom: 25px;
-            color: #2c3e50;
-            font-size: 1.8em;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-            display: inline-block;
-        }
+/* Borde superior decorativo, siguiendo el patrón de diseño */
+.register-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px; /* Altura de la línea */
+    /* Degradado azul para el borde superior, consistente con el resto del diseño */
+    background: linear-gradient(90deg, #3b82f6, #1d4ed8, #0f172a);
+    border-radius: 20px 20px 0 0; /* Solo las esquinas superiores redondeadas */
+}
 
-        .register-container label {
-            display: block;
-            text-align: left;
-            margin-bottom: 8px;
-            margin-top: 15px;
-            color: #555;
-            font-weight: bold;
-            width: 100%; /* Asegura que el label ocupe todo el ancho del contenedor */
-        }
+/* Título del formulario "Registrar Nuevo Empleado" */
+.register-container h2 {
+    font-size: 2.2rem; /* Tamaño de fuente ligeramente más pequeño que los títulos principales */
+    font-weight: 600; /* Negrita */
+    color: #0f172a; /* Color oscuro para el texto principal */
+    margin-bottom: 30px; /* Espacio debajo del título */
+    letter-spacing: -0.02em; /* Espaciado de letras ajustado */
+    line-height: 1.2;
+    text-align: center; /* Centrado */
+}
 
-        .register-container input[type="text"],
-        .register-container input[type="email"],
-        .register-container input[type="password"] {
-            width: calc(100% - 20px); /* Ajusta el ancho para el padding */
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            font-size: 1em;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
+/* Estilos para mensajes de éxito/error (PHP) */
+.message {
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
 
-        .register-container input[type="text"]:focus,
-        .register-container input[type="email"]:focus,
-        .register-container input[type="password"]:focus {
-            border-color: #007bff;
-            outline: none;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
+/* Mensaje de éxito */
+.message.success {
+    background-color: #f0fdf4; /* Fondo verde claro */
+    color: #15803d; /* Texto verde oscuro */
+    border: 1px solid #bbf7d0; /* Borde verde */
+}
 
-        .register-container button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
+/* Mensaje de error */
+.message.error {
+    background-color: #fef2f2; /* Fondo rojo claro */
+    color: #ef4444; /* Texto rojo oscuro */
+    border: 1px solid #fecaca; /* Borde rojo */
+}
 
-        .register-container button:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
+/* Estilos para el elemento de video (cámara) */
+.register-container video {
+    width: 100%;
+    max-width: 480px; /* Ancho máximo para el video */
+    height: auto; /* Altura automática para mantener la proporción */
+    border-radius: 16px; /* Bordes redondeados */
+    margin: 0 auto 20px auto; /* Centrar y añadir margen inferior */
+    display: block; /* Asegura que ocupe su propia línea y se centre con margin: auto */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08); /* Sombra profunda */
+    border: 2px solid #3b82f6; /* Borde azul vibrante */
+}
 
-        .register-container button:active {
-            transform: translateY(0);
-        }
+/* El canvas se mantiene oculto por defecto como en tu HTML */
+.register-container canvas {
+    display: none;
+}
 
-        .register-container #video {
-            width: 100%;
-            max-width: 300px; /* Tamaño fijo para el video */
-            height: 225px; /* Proporción 4:3 para el video */
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            background-color: #000; /* Fondo negro para el video si no hay stream */
-            object-fit: cover; /* Asegura que el video se ajuste bien dentro del tamaño */
-        }
+/* Botón de "Capturar Rostro" */
+#captureFaceBtn {
+    padding: 14px 28px;
+    /* Degradado azul, consistente con botones de acción */
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transición suave */
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); /* Sombra de botón */
+    margin-bottom: 15px; /* Espacio inferior */
+    width: auto; /* Ancho automático, se ajusta al contenido */
+    min-width: 180px; /* Ancho mínimo para legibilidad */
+}
 
-        .register-container #captureFaceBtn {
-            background-color: #28a745; /* Color verde para el botón de captura */
-            max-width: 300px; /* Limita el ancho del botón para que coincida con el video */
-            margin-bottom: 15px; /* Espacio debajo del botón de captura */
-        }
+#captureFaceBtn:hover {
+    background:  #1d4ed8; /* Degradado más oscuro al pasar el mouse */
+    transform: translateY(-2px); /* Pequeño levantamiento */
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3); /* Sombra más pronunciada */
+}
 
-        .register-container #captureFaceBtn:hover {
-            background-color: #218838;
-        }
+#captureFaceBtn:active {
+    transform: translateY(0); /* Vuelve a su posición original al hacer clic */
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1); /* Sombra más suave al hacer clic */
+}
 
-        .register-container #faceStatus {
-            margin-top: 10px;
-            font-size: 0.95em;
-            color: #666;
-            min-height: 1.2em; /* Para evitar saltos de contenido */
-            text-align: center;
-            width: 100%;
-        }
+/* Mensaje de estado del reconocimiento facial */
+#faceStatus {
+    font-size: 15px;
+    font-weight: 500;
+    color: #475569; /* Color de texto gris */
+    background: linear-gradient(135deg, #eff6ff, #dbeafe); /* Fondo azul claro */
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 1px solid #93c5fd; /* Borde azul suave */
+    margin-top: 15px;
+    margin-bottom: 25px;
+    display: inline-block; /* Para que el padding y border-radius se apliquen correctamente */
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.05); /* Sombra sutil */
+    animation: fadeIn 0.5s ease-out; /* Animación de aparición */
+}
 
-        .message {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 0.95em;
-            width: 100%;
-            box-sizing: border-box;
-        }
+/* Estilos del formulario */
+.register-container form {
+    display: flex;
+    flex-direction: column; /* Apila los elementos del formulario verticalmente */
+    gap: 15px; /* Espacio entre los campos del formulario */
+    margin-top: 30px; /* Espacio superior */
+    text-align: left; /* Alinea etiquetas a la izquierda */
+}
 
-        .message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
+/* Estilos para etiquetas */
+.register-container label {
+    font-weight: 600; /* Negrita */
+    color: #334155; /* Color oscuro */
+    font-size: 14px;
+    margin-bottom: 5px; /* Pequeño espacio debajo de la etiqueta */
+    display: block; /* Asegura que la etiqueta esté en su propia línea */
+}
 
-        .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+/* Estilos para campos de texto, email, contraseña y selects */
+.register-container input[type="text"],
+.register-container input[type="email"],
+.register-container input[type="password"],
+.register-container select {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    padding: 12px 18px; /* Relleno interno */
+    border: 1px solid #cbd5e1; /* Borde gris suave */
+    border-radius: 10px; /* Bordes redondeados */
+    font-size: 15px;
+    color: #334155;
+    background-color: #f8fafc; /* Fondo claro */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transiciones suaves */
+    /* Estilos para personalizar el select, eliminando la flecha predeterminada y añadiendo una SVG */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+        background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px;
+    padding-right: 35px; /* Espacio para el icono de la flecha */
+}
 
-        .register-container form {
-            width: 100%; /* Asegura que el formulario ocupe todo el ancho del contenedor */
-        }
+/* Efecto de foco en campos de formulario */
+.register-container input[type="text"]:focus,
+.register-container input[type="email"]:focus,
+.register-container input[type="password"]:focus,
+.register-container select:focus {
+    outline: none; /* Elimina el contorno predeterminado del navegador */
+    border-color: #3b82f6; /* Borde azul al enfocar */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Sombra de enfoque */
+}
 
-        .back-link {
-            display: block;
-            margin-top: 25px;
-            color: #007bff;
-            text-decoration: none;
-            font-size: 0.9em;
-            transition: color 0.3s ease;
-        }
+/* Botón de "Registrar Empleado" */
+.register-container button[type="submit"] {
+    padding: 16px 32px;
+    /* Degradado verde, un color de acción positiva */
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+    margin-top: 20px; /* Espacio superior */
+}
 
-        .back-link:hover {
-            text-decoration: underline;
-            color: #0056b3;
-        }
+.register-container button[type="submit"]:hover {
+    background: linear-gradient(135deg, #16a34a, #15803d); /* Degradado más oscuro al pasar el mouse */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(34, 197, 94, 0.3);
+}
 
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            .register-container {
-                margin: 20px;
-                padding: 20px;
-            }
-            .register-container #video,
-            .register-container #captureFaceBtn {
-                max-width: 100%; /* Permite que el video y botón sean más grandes en móviles */
-                height: auto; /* Permite que el video se adapte en altura */
-            }
-        }
+.register-container button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
+}
+
+/* Enlace "Volver al Inicio de Sesión" */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px; /* Espacio entre el ícono y el texto */
+    padding: 14px 28px;
+    /* Degradado gris, similar al botón de "cerrar sesión" o "volver" */
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    text-decoration: none; /* Sin subrayado */
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent; /* Borde transparente para efecto de hover */
+    letter-spacing: 0.01em;
+    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.2);
+    margin-top: 30px; /* Espacio superior */
+}
+
+.back-link::before {
+    font-size: 18px;
+}
+
+.back-link:hover {
+    background:  #1d4ed8; /* Degradado más oscuro al pasar el mouse */
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 24px rgba(100, 116, 139, 0.3),
+        0 4px 12px rgba(100, 116, 139, 0.2);/
+}
+
+.back-link:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.2);
+}
+
+/* Animación de aparición (usada para mensajes de estado) */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*
+---
+*/
+
+/* Estilos responsivos */
+
+/* Para pantallas medianas (tabletas y laptops pequeñas) */
+@media (max-width: 768px) {
+    .register-container {
+        padding: 30px 25px; /* Reduce el padding */
+        margin: 20px auto; /* Ajusta el margen */
+    }
+
+    .register-container h2 {
+        font-size: 1.8rem; /* Tamaño de fuente más pequeño */
+        margin-bottom: 25px;
+    }
+
+    .register-container input[type="text"],
+    .register-container input[type="email"],
+    .register-container input[type="password"],
+    .register-container select {
+        padding: 10px 15px; /* Reduce el padding de los inputs/selects */
+        font-size: 14px; /* Reduce el tamaño de fuente */
+    }
+
+    #captureFaceBtn {
+        padding: 12px 24px; /* Ajusta el padding del botón de captura */
+        font-size: 15px;
+    }
+
+    .register-container button[type="submit"] {
+        padding: 14px 28px; /* Ajusta el padding del botón de submit */
+        font-size: 15px;
+    }
+
+    .back-link {
+        padding: 12px 24px; /* Ajusta el padding del enlace de volver */
+        font-size: 14px;
+        gap: 10px;
+    }
+}
+
+/* Para pantallas pequeñas (teléfonos móviles) */
+@media (max-width: 480px) {
+    .register-container {
+        padding: 25px 20px; /* Padding aún más reducido */
+        margin: 15px auto;
+    }
+
+    .register-container h2 {
+        font-size: 1.5rem; /* Título más pequeño */
+        margin-bottom: 20px;
+    }
+
+    .register-container input[type="text"],
+    .register-container input[type="email"],
+    .register-container input[type="password"],
+    .register-container select {
+        padding: 10px 12px; /* Padding mínimo para inputs/selects */
+        font-size: 13px; /* Tamaño de fuente más pequeño */
+    }
+
+    #captureFaceBtn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .register-container button[type="submit"] {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+
+    .back-link {
+        padding: 10px 20px;
+        font-size: 13px;
+        gap: 8px;
+    }
+}
+
+/*
+---
+*/
+
+/* Accesibilidad */
+
+/* Estilos de enfoque para asegurar la navegación con teclado */
+.register-container input:focus,
+.register-container select:focus,
+#captureFaceBtn:focus,
+.register-container button[type="submit"]:focus,
+.back-link:focus {
+    outline: 3px solid #3b82f6; /* Contorno azul brillante al enfocar */
+    outline-offset: 2px; /* Separa el contorno del elemento */
+}
+
+/* Preferencias de movimiento reducido para usuarios sensibles a animaciones */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.1s !important;
+        transition-duration: 0.1s !important;
+    }
+}
     </style>
 
     <div class="register-container">
@@ -282,9 +480,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Cargar modelos de face-api.js con la ruta ORIGINAL PROPORCIONADA
             Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri('/Clockin2/Marcardor_verssato/Public_html/assets/lib/models'),
-                faceapi.nets.faceLandmark68Net.loadFromUri('/Clockin2/Marcardor_verssato/Public_html/assets/lib/models'),
-                faceapi.nets.faceRecognitionNet.loadFromUri('/Clockin2/Marcardor_verssato/Public_html/assets/lib/models')
+                faceapi.nets.tinyFaceDetector.loadFromUri('./assets/lib/models'),
+                faceapi.nets.faceLandmark68Net.loadFromUri('./assets/lib/models'),
+                faceapi.nets.faceRecognitionNet.loadFromUri('./assets/lib/models')
             ]).then(() => {
                 faceStatus.innerText = "Modelos cargados. Iniciando cámara...";
                 captureFaceBtn.disabled = false; // Habilitar el botón después de cargar modelos
@@ -372,7 +570,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             });
         });
     </script>
-<?php include 'includes/footer.php'; ?>
 
 <?php
 // Cierra la conexión a la base de datos
