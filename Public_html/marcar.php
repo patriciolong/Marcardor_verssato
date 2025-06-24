@@ -35,7 +35,215 @@ $tipo_marcacion = isset($_GET['tipo']) ? $_GET['tipo'] : 'desconocido';
 ?>
 
 <?php include 'includes/header.php'; ?>
-    <div class="container">
+
+    <style>
+/* Contenedor principal */
+.containerMarcar {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%); /* Fondo degradado similar al header */
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 40px;
+    margin: 20px auto; /* Centra el div horizontalmente y mantiene un margen vertical de 20px */
+    box-shadow:
+        0 4px 20px rgba(15, 23, 42, 0.1),
+        0 1px 4px rgba(15, 23, 42, 0.05);
+    width: 100%;
+    max-width: 768px; /* Ancho máximo para el contenido */
+    text-align: center;
+    
+    position: relative;
+    overflow: hidden;
+    /* margin-left: 5%; -- Eliminado para centrar con 'auto' */
+}
+
+/* Borde superior decorativo */
+.containerMarcar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #1d4ed8, #0f172a); /* Degradado azul */
+    border-radius: 20px 20px 0 0;
+}
+
+/* Título de la página (Nota: Si tu H2 está dentro de .containerMarcar, el selector debería ser .containerMarcar h2) */
+/* Si "container" es una clase separada que envuelve todo, entonces este selector es correcto. */
+/* Para este ejemplo, asumo que 'container' en '.container h2' es un error tipográfico y se refiere a '.containerMarcar h2'. */
+/* Si .containerMarcar contiene el h2, cambia este selector a .containerMarcar h2 */
+.containerMarcar h2 { /* Actualizado para apuntar a h2 dentro de containerMarcar */
+    font-size: 2.5rem; /* Tamaño similar a h2 del dashboard */
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 30px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+/* Contenedor de la cámara (video y canvas) */
+.camera-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 75%; /* Ratio 4:3 para el video/canvas (480/640 = 0.75) */
+    margin-bottom: 25px;
+    background-color: #000;
+    border-radius: 16px;
+    overflow: hidden; /* Asegura que el contenido se ajuste a los bordes redondeados */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 2px solid #3b82f6; /* Borde azul vibrante */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Video y Canvas */
+#video,
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que el video/canvas cubra el área sin distorsión */
+    border-radius: 14px; /* Un poco menos que el contenedor para que el borde se vea */
+}
+
+/* Mensaje de estado de reconocimiento */
+#recognitionStatus {
+    font-size: 16px;
+    font-weight: 500;
+    color: #475569;
+    background: linear-gradient(135deg, #f0fdf4, #e0ffe8); /* Fondo claro para el mensaje */
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: 1px solid #bbf7d0;
+    margin-top: 25px;
+    margin-bottom: 30px;
+    display: inline-block; /* Para que el padding y border-radius funcionen bien */
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    animation: fadeIn 0.5s ease-out; /* Animación de aparición */
+}
+
+/* Estilo para el enlace "Volver al Dashboard" */
+.return-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #64748b, #475569); /* Degradado gris similar a logout */
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    letter-spacing: 0.01em;
+    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.2);
+}
+
+.return-link::before {
+    content: '🔙'; /* Emoji para un look más moderno */
+    font-size: 18px;
+}
+
+.return-link:hover {
+    background: linear-gradient(135deg, #475569, #334155); /* Degradado más oscuro al pasar el mouse */
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 24px rgba(100, 116, 139, 0.3),
+        0 4px 12px rgba(100, 116, 139, 0.2);
+    border-color: #94a3b8;
+}
+
+.return-link:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.2);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .containerMarcar { /* Asegúrate de que el selector sea el correcto */
+        padding: 30px 25px;
+        margin: 15px auto; /* Mantener centrado */
+    }
+
+    .containerMarcar h2 { /* Asegúrate de que el selector sea el correcto */
+        font-size: 2rem;
+        margin-bottom: 25px;
+    }
+
+    #recognitionStatus {
+        font-size: 15px;
+        padding: 12px 18px;
+        margin-top: 20px;
+        margin-bottom: 25px;
+    }
+
+    .return-link {
+        padding: 14px 28px;
+        font-size: 15px;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .containerMarcar { /* Asegúrate de que el selector sea el correcto */
+        padding: 25px 20px;
+        margin: 10px auto; /* Mantener centrado */
+    }
+
+    .containerMarcar h2 { /* Asegúrate de que el selector sea el correcto */
+        font-size: 1.75rem;
+        margin-bottom: 20px;
+    }
+
+    .camera-container {
+        padding-bottom: 100%; /* Cuadrado en pantallas muy pequeñas */
+        margin-bottom: 20px;
+    }
+
+    #recognitionStatus {
+        font-size: 14px;
+        padding: 10px 15px;
+        margin-top: 15px;
+        margin-bottom: 20px;
+    }
+
+    .return-link {
+        padding: 12px 24px;
+        font-size: 14px;
+        gap: 8px;
+    }
+}
+
+/* Accesibilidad */
+.return-link:focus {
+    outline: 3px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.1s !important;
+        transition-duration: 0.1s !important;
+    }
+}
+    </style>
+    <div class="containerMarcar">
         <h2>Marcar <?php echo htmlspecialchars(ucfirst($tipo_marcacion)); ?></h2>
         <div class="camera-container">
             <video id="video" width="640" height="480" autoplay muted></video>
@@ -76,9 +284,9 @@ $tipo_marcacion = isset($_GET['tipo']) ? $_GET['tipo'] : 'desconocido';
 
             // Cargar modelos de face-api.js
             Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri('assets/lib/models'),
-                faceapi.nets.faceLandmark68Net.loadFromUri('assets/lib/models'), // Necesario para los landmarks
-                faceapi.nets.faceRecognitionNet.loadFromUri('assets/lib/models')
+                faceapi.nets.tinyFaceDetector.loadFromUri('./assets/lib/models'),
+                faceapi.nets.faceLandmark68Net.loadFromUri('./assets/lib/models'), // Necesario para los landmarks
+                faceapi.nets.faceRecognitionNet.loadFromUri('./assets/lib/models')
                 // faceapi.nets.faceExpressionNet.loadFromUri('assets/lib/models') // Ya no es estrictamente necesario para boca abierta por landmarks, pero lo dejamos si se quiere ver expresiones.
             ]).then(startVideo);
 
@@ -265,4 +473,3 @@ $tipo_marcacion = isset($_GET['tipo']) ? $_GET['tipo'] : 'desconocido';
             });
         });
     </script>
-<?php include 'includes/footer.php'; ?>
