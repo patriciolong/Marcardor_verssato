@@ -45,15 +45,15 @@ if (isset($_GET['error_message'])) {
 <style>
     .main-content {
         padding: 48px 40px;
-        max-width: 1200px;
+        
         margin: 0 auto;
-        background:rgb(213, 206, 255);
-        min-height: calc(100vh - 120px);
+        width: 100%;
+        height: 100%;
     }
 
     /* === HEADER SECTION === */
     .dashboard-header {
-        background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+        background: white;
         border: 1px solid #e2e8f0;
         border-radius: 20px;
         padding: 40px;
@@ -63,8 +63,6 @@ if (isset($_GET['error_message'])) {
             0 1px 4px rgba(15, 23, 42, 0.02);
         position: relative;
         overflow: hidden;
-        width: 100%;
-        max-width: none;
     }   
 
     .dashboard-header::before {
@@ -83,6 +81,8 @@ if (isset($_GET['error_message'])) {
         align-items: center;
         justify-content: space-between;
         margin-bottom: 24px;
+        gap: 40vh;
+       
     }
 
     .user-info h2:first-child {
@@ -399,6 +399,12 @@ if (isset($_GET['error_message'])) {
 
     /* === RESPONSIVE === */
     @media (max-width: 768px) {
+
+        .content-area {
+        padding: 20px;
+        margin-right: 0px;
+    }
+    
         .main-content {
             padding: 24px 20px;
         }

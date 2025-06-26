@@ -79,7 +79,6 @@ if ($is_ajax_request) {
     <?php include 'includes/header.php'; ?>
 
     <style>
-           /* Estilos para la sección de Registro de Marcaciones */
 
 /* Título principal de la sección */
 .main-content h2 {
@@ -90,14 +89,12 @@ if ($is_ajax_request) {
     letter-spacing: -0.02em;
     line-height: 1.2;
     text-align: left; /* Alineado a la izquierda como los títulos de contenido */
-    padding-left: 10px; /* Pequeño padding para visualización */
+    margin-top: 5%;
 }
 
 /* Contenedor de la barra de búsqueda y el botón de exportar */
 .search-export-container {
     display: flex;
-    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
-    gap: 20px; /* Espacio entre la barra de búsqueda y el botón de exportar */
     margin-bottom: 30px;
     align-items: center;
     justify-content: space-between; /* Distribuye el espacio para alinear a los extremos */
@@ -105,6 +102,7 @@ if ($is_ajax_request) {
     border: 1px solid #e2e8f0;
     border-radius: 16px;
     padding: 20px 25px;
+    margin-left: 0px;
     box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 }
 
@@ -134,13 +132,13 @@ if ($is_ajax_request) {
 
 .search-bar input[type="text"]:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color:rgb(15, 23, 42);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
-.search-bar button {
-    padding: 12px 20px;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8); /* Degradado azul */
+#searchButton {
+    padding: 12px 30px;
+    background:rgb(15, 23, 42);
     color: white;
     border: none;
     border-radius: 10px;
@@ -151,14 +149,9 @@ if ($is_ajax_request) {
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
-.search-bar button:hover {
-    background:  #1d4ed8;
+#searchButton:hover {
+    background:rgb(21, 40, 85);
     transform: translateY(-2px);
-}
-
-.search-bar button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
 }
 
 .search-bar a#clearSearchLink {
@@ -222,24 +215,25 @@ if ($is_ajax_request) {
 
 /* Contenedor de la tabla (permite desplazamiento horizontal en pantallas pequeñas) */
 .table-container {
+    overflow-y: auto;
     overflow-x: auto; /* Permite scroll horizontal en la tabla si no cabe */
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
     box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08), 0 1px 4px rgba(15, 23, 42, 0.03);
-    padding: 20px;
+    padding: 30px;
+    height: 70vh;
+    width: 100%;
 }
 
 /* Estilo de la tabla de marcaciones */
 .marcaciones-table {
     width: 100%;
     border-collapse: collapse; /* Elimina los espacios entre los bordes de las celdas */
-    min-width: 700px; /* Asegura un ancho mínimo para la tabla en pantallas pequeñas */
 }
 
 .marcaciones-table thead th {
-    background-color: #f1f5f9; /* Fondo de encabezado de tabla */
-    color: #334155;
+    background:rgb(15, 23, 42);
+    color:rgb(255, 255, 255);
     padding: 15px 20px;
     text-align: left;
     font-weight: 600;
@@ -251,7 +245,7 @@ if ($is_ajax_request) {
 .marcaciones-table tbody td {
     padding: 12px 20px;
     border-bottom: 1px solid #f1f5f9;
-    color: #475569;
+    color:rgb(15, 23, 42);
     font-size: 14px;
     white-space: nowrap; /* Evita que el contenido de la celda se envuelva */
 }
@@ -262,11 +256,12 @@ if ($is_ajax_request) {
 
 /* Estilo para filas pares (para efecto zebra) */
 .marcaciones-table tbody tr:nth-child(even) {
-    background-color: #fdfdfe; /* Color más claro para filas pares */
+    background-color:rgb(196, 208, 221); /* Color más claro para filas pares */
 }
 
 .marcaciones-table tbody tr:hover {
-    background-color: #f0f8ff; /* Sutil cambio de color al pasar el mouse */
+    border-color: rgb(181, 192, 204);
+    background-color:rgb(181, 192, 204); /* Sutil cambio de color al pasar el mouse */
 }
 
 /* Mensaje de "No hay marcaciones" */
@@ -278,7 +273,12 @@ if ($is_ajax_request) {
 }
 
 /* Estilos responsivos para esta sección */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+    .content-area {
+                padding: 20px;
+                margin-right: 0px;
+            }
+            
     .main-content h2 {
         font-size: 2rem;
         margin-bottom: 25px;
@@ -328,11 +328,21 @@ if ($is_ajax_request) {
 }
 
 @media (max-width: 480px) {
+    .content-area {
+        padding: 20px;
+        margin-right: 0px;
+    }
     .main-content h2 {
         font-size: 1.75rem;
         margin-bottom: 20px;
     }
-
+    .search-bar {
+    display: flex;
+    
+    /* Permite que la barra de búsqueda ocupe el espacio disponible */
+    gap: 10px;
+    align-items: center;
+}
     .search-export-container {
         padding: 15px;
         gap: 10px;
@@ -349,78 +359,154 @@ if ($is_ajax_request) {
         font-size: 13px;
     }
 
+    /* Contenedor de tabla para teléfonos muy pequeños */
+    .table-container {
+        padding: 0;
+        height: 55vh; /* Altura optimizada para pantallas muy pequeñas */
+        /* Scroll suave en todas las direcciones */
+        overflow-x: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        /* Indicador visual de que se puede hacer scroll */
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 #f1f5f9;
+    }
+
+    /* Para webkit (Chrome, Safari en móvil) */
+    .table-container::-webkit-scrollbar {
+        height: 4px;
+        width: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 2px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 2px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* La tabla mantiene tamaño completo en teléfonos */
+    .marcaciones-table {
+        min-width: 900px; /* Ancho aún mayor para forzar scroll */
+        width: auto;
+    }
+
+    /* Mantiene legibilidad en la tabla */
     .marcaciones-table thead th,
     .marcaciones-table tbody td {
-        padding: 8px 12px;
-        font-size: 12px;
+        padding: 10px 12px;
+        font-size: 13px; /* Tamaño mínimo pero legible */
+        white-space: nowrap; /* Crucial: evita que el texto se envuelva */
     }
-
-    /* Asegurar que la tabla siga siendo desplazable horizontalmente */
-    .table-container {
-        padding: 10px;
-    }
+    .current-time {
+    display: none;
 }
-    </style>
+}
 
-    <div class="main-content">
+/* Los siguientes estilos no estaban presentes en el HTML original para "Registro de Marcaciones"
+   pero se mantuvieron del CSS original por completitud. No afectan el diseño actual. */
+.current-time {
+    text-align: right;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+}
+
+.time-display {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+}
+
+.date-display {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.welcome-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 40vh;
+}
+</style>
+
+<div class="main-content">
+    <div class="welcome-section">
         <h2>Registro de Marcaciones</h2>
+        <div class="current-time">
 
-        <div class="search-export-container">
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Buscar por nombre, apellido, o email..." value="<?php echo htmlspecialchars($search_query); ?>">
-                <button id="searchButton">Buscar</button>
-                <a href="#" id="clearSearchLink" style="display:<?php echo empty($search_query) ? 'none' : 'inline-block'; ?>;">Limpiar búsqueda</a>
-            </div>
-            <div class="export-button">
-                <a href="export_marcaciones.php<?php echo !empty($search_query) ? '?search=' . urlencode($search_query) : ''; ?>" class="button" id="exportExcelButton">Exportar a Excel</a>
-            </div>
-        </div>
-
-        <?php if (!empty($error_message)): ?>
-            <p class="error-message"><?php echo $error_message; ?></p>
-        <?php endif; ?>
-
-        <div class="table-container">
-            <table class="marcaciones-table">
-                <thead>
-                    <tr>
-                        <th>ID Marcación</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Email</th>
-                        <th>Fecha y Hora</th>
-                        <th>Tipo</th>
-                        <th>Ubicación</th>
-                    </tr>
-                </thead>
-                <tbody id="marcacionesTableBody">
-                    <?php if (empty($marcaciones)): ?>
-                        <tr id="noInitialDataMessage">
-                            <td colspan="7">No hay marcaciones para mostrar.</td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($marcaciones as $marcacion): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($marcacion['id_marcacion']); ?></td>
-                                <td><?php echo htmlspecialchars($marcacion['nombre']); ?></td>
-                                <td><?php echo htmlspecialchars($marcacion['apellido']); ?></td>
-                                <td><?php echo htmlspecialchars($marcacion['email']); ?></td>
-                                <td><?php echo htmlspecialchars($marcacion['fecha_hora']); ?></td>
-                                <td><?php echo htmlspecialchars($marcacion['tipo']); ?></td>
-                                <td><?php
-                                    if (!empty($marcacion['ubicacion_latitud']) && !empty($marcacion['ubicacion_longitud'])) {
-                                        echo htmlspecialchars($marcacion['ubicacion_latitud']) . ', ' . htmlspecialchars($marcacion['ubicacion_longitud']);
-                                    } else {
-                                        echo 'N/A';
-                                    }
-                                ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+            <div class="time-display" id="current-time">--:--:--</div>
+            <div class="date-display" id="current-date">-- -- ----</div>
         </div>
     </div>
+
+    <div class="search-export-container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Buscar por nombre, apellido, o email..." value="<?php echo htmlspecialchars($search_query); ?>">
+            <button id="searchButton">Buscar</button>
+        </div>
+        <div class="export-button">
+            <a href="export_marcaciones.php<?php echo !empty($search_query) ? '?search=' . urlencode($search_query) : ''; ?>" class="button" id="exportExcelButton">Exportar a Excel</a>
+        </div>
+    </div>
+
+    <?php if (!empty($error_message)): ?>
+        <p class="error-message"><?php echo $error_message; ?></p>
+    <?php endif; ?>
+
+    <div class="table-container">
+        <table class="marcaciones-table">
+            <thead>
+                <tr>
+                    <th>ID Marcación</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Fecha y Hora</th>
+                    <th>Tipo</th>
+                    <th>Ubicación</th>
+                </tr>
+            </thead>
+            <tbody id="marcacionesTableBody">
+                <?php if (empty($marcaciones)): ?>
+                    <tr id="noInitialDataMessage">
+                        <td colspan="7">No hay marcaciones para mostrar.</td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($marcaciones as $marcacion): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($marcacion['id_marcacion']); ?></td>
+                            <td><?php echo htmlspecialchars($marcacion['nombre']); ?></td>
+                            <td><?php echo htmlspecialchars($marcacion['apellido']); ?></td>
+                            <td><?php echo htmlspecialchars($marcacion['email']); ?></td>
+                            <td><?php echo htmlspecialchars($marcacion['fecha_hora']); ?></td>
+                            <td><?php echo htmlspecialchars($marcacion['tipo']); ?></td>
+                            <td><?php
+                                if (!empty($marcacion['ubicacion_latitud']) && !empty($marcacion['ubicacion_longitud'])) {
+                                    echo htmlspecialchars($marcacion['ubicacion_latitud']) . ', ' . htmlspecialchars($marcacion['ubicacion_longitud']);
+                                } else {
+                                    echo 'N/A';
+                                }
+                            ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -434,6 +520,37 @@ if ($is_ajax_request) {
             let typingTimer;
             const doneTypingInterval = 500; // milisegundos
 
+             function updateClock() {
+                const now = new Date();
+                
+                // Formatear hora
+                const timeOptions = {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                };
+                const timeString = now.toLocaleTimeString('es-ES', timeOptions);
+                
+                // Formatear fecha
+                const dateOptions = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                };
+                const dateString = now.toLocaleDateString('es-ES', dateOptions);
+                
+                // Actualizar elementos
+                document.getElementById('current-time').textContent = timeString;
+                document.getElementById('current-date').textContent = dateString;
+
+            }
+            
+            // Actualizar cada segundo
+            updateClock();
+            setInterval(updateClock, 1000);
+            
             function updateExportLink() {
                 const currentSearchQuery = searchInput.value;
                 exportExcelButton.href = `export_marcaciones.php?search=${encodeURIComponent(currentSearchQuery)}`;
