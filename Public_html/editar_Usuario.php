@@ -412,6 +412,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_usuario'])) {
                     <select id="locall" name="locall">
                         <option value="Centro" <?php echo ($locall_form == 'Centro') ? 'selected' : ''; ?>>Centro</option>
                         <option value="Bolivar" <?php echo ($locall_form == 'Bolivar') ? 'selected' : ''; ?>>Bolivar</option>
+                        <option value="Prueba" <?php echo ($locall_form == 'Prueba') ? 'selected' : ''; ?>>Prueba</option>
                     </select>
 
                     <label for="estado">Estado:</label>

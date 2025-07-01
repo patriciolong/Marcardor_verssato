@@ -20,6 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $estado = trim($_POST['estado'] ?? '');
     $face_descriptor_json = $_POST['face_descriptor'] ?? null; // Obtener el descriptor del input oculto
 
+    if ($locall == "Prueba") {
+        $latitud_prueba = -2.88938930;
+        $longitud_prueba = -78.97193890;
+    }
+    
     if (empty($nombre) || empty($apellido) || empty($email) || empty($password) || empty($face_descriptor_json)) {
         $message = "Por favor, completa todos los campos y **captura tu rostro**.";
         $message_type = 'error';
@@ -418,6 +423,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label for="locall">Local:</label> <select id="locall" name="locall" required>
                         <option value="Centro">Centro</option>
                         <option value="Bolivar">Bolivar</option>
+                        <option value="Prueba">Prueba</option>
                     </select>
                 </div>
 
