@@ -89,7 +89,7 @@ if ($is_ajax_request) {
     letter-spacing: -0.02em;
     line-height: 1.2;
     text-align: left; /* Alineado a la izquierda como los títulos de contenido */
-    margin-top: 5%;
+    margin-top: 3%;
 }
 
 /* Contenedor de la barra de búsqueda y el botón de exportar */
