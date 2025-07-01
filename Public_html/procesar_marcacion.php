@@ -8,36 +8,67 @@ if (!isset($_SESSION['id_empleado'])) {
     exit();
 }
 
-include 'config.php'; // Archivo de conexión a la BD
-// Si funciones.php tiene session_start(), no lo incluyas aquí si ya está arriba,
-// o asegúrate de que tu funciones.php no inicie la sesión de nuevo.
-// include 'includes/funciones.php'; // Removido si session_start() ya está al inicio
-
+include 'config.php'; 
 header('Content-Type: application/json');
 
 $input = json_decode(file_get_contents('php://input'), true);
 
 $tipoMarcacion = $input['tipo'] ?? null;
-$recognized = $input['recognized'] ?? false; // Recibe si el reconocimiento facial fue exitoso
-// REMOVED: $livenessDetected = $input['liveness_detected'] ?? false; // <-- ¡NUEVO! Recibe el estado de vivacidad
+$recognized = $input['recognized'] ?? false; 
 $idEmpleado = $_SESSION['id_empleado'];
 
-// Capturar la IP del cliente (siempre disponible en el servidor)
 $ip_address = $_SERVER['REMOTE_ADDR'] ?? null;
 
-// Capturar latitud y longitud enviadas desde el frontend (podrían ser null si el usuario denegó)
-$ubicacion_latitud = $input['ubicacion_latitud'] ?? null;
-$ubicacion_longitud = $input['ubicacion_longitud'] ?? null;
+$ubicacion_latitud = (float)($input['ubicacion_latitud'] ?? 0.0);
+$ubicacion_longitud = (float)($input['ubicacion_longitud'] ?? 0.0);
 
-// Validar que los datos esenciales estén presentes
+$local_empleado = $input['local_empleado'] ?? null;
+
+$rango_maximo = 2;
+
+$coordenadasLocales = [
+    'Prueba' => ['lat' => -2.88939080, 'lng' => -78.97195790],
+    'Centro' => ['lat' => -2.90000000, 'lng' => -78.97000000],
+    'Bolivar' => ['lat' => -2.91000000, 'lng' => -78.96000000]
+];
+
+if (!$local_empleado || !isset($coordenadasLocales[$local_empleado])) {
+    echo json_encode(['success' => false, 'message' => 'Local no válido.']);
+    exit;
+}
+
+$lat_local = $coordenadasLocales[$local_empleado]['lat'];
+$lng_local = $coordenadasLocales[$local_empleado]['lng'];
+
+function calcularDistanciaMetros($lat1, $lon1, $lat2, $lon2) {
+    $radio_tierra = 6371000; // En metros
+    $lat1_rad = deg2rad($lat1);
+    $lat2_rad = deg2rad($lat2);
+    $delta_lat = deg2rad($lat2 - $lat1);
+    $delta_lon = deg2rad($lon2 - $lon1);
+
+    $a = sin($delta_lat / 2) * sin($delta_lat / 2) +
+         cos($lat1_rad) * cos($lat2_rad) *
+         sin($delta_lon / 2) * sin($delta_lon / 2);
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+    return $radio_tierra * $c;
+}
+
+$distancia = calcularDistanciaMetros($ubicacion_latitud, $ubicacion_longitud, $lat_local, $lng_local);
+if ($distancia > $rango_maximo) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Estás fuera del rango permitido. Estás a ' . round($distancia, 2) . ' metros del local.'
+    ]);
+    exit;
+}
+
 if (empty($tipoMarcacion)) {
     echo json_encode(['success' => false, 'message' => 'Tipo de marcación no especificado.']);
     exit();
 }
 
-// Para marcación de entrada, SÓLO registramos si el reconocimiento fue exitoso.
-// Se ha eliminado la condición de vivacidad.
-// Para marcación de salida, no requerimos reconocimiento facial o vivacidad por defecto, pero podrías añadirlo si lo deseas.
 if ($tipoMarcacion === 'entrada') {
     if (!$recognized) {
         echo json_encode(['success' => false, 'message' => 'Rostro no reconocido. Por favor, asegúrese de estar bien centrado.']);

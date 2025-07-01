@@ -20,6 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $estado = trim($_POST['estado'] ?? '');
     $face_descriptor_json = $_POST['face_descriptor'] ?? null; // Obtener el descriptor del input oculto
 
+    if ($locall == "Prueba") {
+        $latitud_prueba = -2.88938930;
+        $longitud_prueba = -78.97193890;
+    }
+    
     if (empty($nombre) || empty($apellido) || empty($email) || empty($password) || empty($face_descriptor_json)) {
         $message = "Por favor, completa todos los campos y **captura tu rostro**.";
         $message_type = 'error';
@@ -61,12 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <?php include 'includes/header.php'; ?>
 
     <style>
-
-
-        /* Overall content wrapper for width control and centering */
-       
-
-        /* --- Page Title --- */
         .main-content h2 { 
             font-size: 2.5rem; 
             font-weight: 500;
@@ -127,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         /* Define grid areas for direct children of .register-container */
         .register-container h2 {
             grid-area: title; /* Aseguramos que el título esté al principio */
-            margin-bottom: 20px; /* Espacio debajo del título */
+         /* Espacio debajo del título */
             text-align: center;
             font-size: 2rem;
         }
@@ -289,7 +288,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         /* --- Responsive Adjustments --- */
-        @media (min-width: 769px) { /* En pantallas más grandes, ajustamos el layout del contenedor principal */
+        @media (min-width: 1024px) { /* En pantallas más grandes, ajustamos el layout del contenedor principal */
+            .content-area {
+                padding: 20px;
+                margin-right: 0px;
+            }
+
             .register-container {
                 /* Definimos un layout de dos columnas para el video y el formulario */
                 grid-template-columns: 1fr 2fr; /* Columna del video más pequeña, formulario más grande */
@@ -301,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 /
             }
             .register-container h2 {
-                text-align: left; /* Título principal de nuevo a la izquierda en pantallas grandes */
+                text-align: left; 
             }
             .register-container form {
                 margin-top: 0; /* Reiniciamos si hay algún margin-top heredado */
@@ -312,6 +316,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         @media (max-width: 768px) {
+
+            .content-area {
+                padding: 0 10px;
+                margin: 10px auto;
+            }
+            
             .main-content h2 { 
                 font-size: 2rem;
                 text-align: center;
@@ -324,10 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             .current-time {
                 text-align: center;
             }
-            .content-area {
-                padding: 0 15px; 
-                margin: 15px auto;
-            }
+
             .register-container {
                 /* En móvil, volvemos a una sola columna apilada */
                 grid-template-columns: 1fr;
@@ -416,6 +423,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label for="locall">Local:</label> <select id="locall" name="locall" required>
                         <option value="Centro">Centro</option>
                         <option value="Bolivar">Bolivar</option>
+                        <option value="Prueba">Prueba</option>
                     </select>
                 </div>
 

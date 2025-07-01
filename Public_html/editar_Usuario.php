@@ -312,18 +312,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_usuario'])) {
         }
 
         /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .main-content h2 { 
+        @media (max-width: 1024px) {
+            .content-area {
+                padding: 20px;
+                margin-right: 0px;
+            }
+            .main-content-area h2 { 
                 font-size: 2rem;
                 text-align: center;
+                margin-bottom: 0%;
+            }
+
+            .content-area {
+                padding: 20px;
+                margin-right: 0px;
             }
             .welcome-section {
                 flex-direction: column;
                 align-items: center;
                 gap: 15px;
+                margin: 0%;
+                margin-bottom: 0%;
             }
             .current-time {
-                text-align: center;
+            display: none;
             }
             .main-content-area {
                 padding: 0 15px; /* Less horizontal padding on smaller screens */
@@ -400,6 +412,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_usuario'])) {
                     <select id="locall" name="locall">
                         <option value="Centro" <?php echo ($locall_form == 'Centro') ? 'selected' : ''; ?>>Centro</option>
                         <option value="Bolivar" <?php echo ($locall_form == 'Bolivar') ? 'selected' : ''; ?>>Bolivar</option>
+                        <option value="Prueba" <?php echo ($locall_form == 'Prueba') ? 'selected' : ''; ?>>Prueba</option>
                     </select>
 
                     <label for="estado">Estado:</label>

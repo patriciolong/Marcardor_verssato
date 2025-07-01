@@ -79,6 +79,7 @@ if ($is_ajax_request) {
     <?php include 'includes/header.php'; ?>
 
     <style>
+
 /* Título principal de la sección */
 .main-content h2 {
     font-size: 2.5rem; /* Tamaño similar al .containerMarcar h2 */
@@ -88,7 +89,7 @@ if ($is_ajax_request) {
     letter-spacing: -0.02em;
     line-height: 1.2;
     text-align: left; /* Alineado a la izquierda como los títulos de contenido */
-    margin-top: 10px;
+    margin-top: 3%;
 }
 
 /* Contenedor de la barra de búsqueda y el botón de exportar */
@@ -214,6 +215,7 @@ if ($is_ajax_request) {
 
 /* Contenedor de la tabla (permite desplazamiento horizontal en pantallas pequeñas) */
 .table-container {
+    overflow-y: auto;
     overflow-x: auto; /* Permite scroll horizontal en la tabla si no cabe */
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -254,11 +256,12 @@ if ($is_ajax_request) {
 
 /* Estilo para filas pares (para efecto zebra) */
 .marcaciones-table tbody tr:nth-child(even) {
-    background-color: #f1f5f9; /* Color más claro para filas pares */
+    background-color:rgb(196, 208, 221); /* Color más claro para filas pares */
 }
 
 .marcaciones-table tbody tr:hover {
-    background-color: #f0f8ff; /* Sutil cambio de color al pasar el mouse */
+    border-color: rgb(181, 192, 204);
+    background-color:rgb(181, 192, 204); /* Sutil cambio de color al pasar el mouse */
 }
 
 /* Mensaje de "No hay marcaciones" */
@@ -270,7 +273,12 @@ if ($is_ajax_request) {
 }
 
 /* Estilos responsivos para esta sección */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+    .content-area {
+                padding: 20px;
+                margin-right: 0px;
+            }
+            
     .main-content h2 {
         font-size: 2rem;
         margin-bottom: 25px;
@@ -320,11 +328,21 @@ if ($is_ajax_request) {
 }
 
 @media (max-width: 480px) {
+    .content-area {
+        padding: 20px;
+        margin-right: 0px;
+    }
     .main-content h2 {
         font-size: 1.75rem;
         margin-bottom: 20px;
     }
-
+    .search-bar {
+    display: flex;
+    
+    /* Permite que la barra de búsqueda ocupe el espacio disponible */
+    gap: 10px;
+    align-items: center;
+}
     .search-export-container {
         padding: 15px;
         gap: 10px;
@@ -341,16 +359,55 @@ if ($is_ajax_request) {
         font-size: 13px;
     }
 
-    .marcaciones-table thead th,
-    .marcaciones-table tbody td {
-        padding: 8px 12px;
-        font-size: 12px;
+    /* Contenedor de tabla para teléfonos muy pequeños */
+    .table-container {
+        padding: 0;
+        height: 55vh; /* Altura optimizada para pantallas muy pequeñas */
+        /* Scroll suave en todas las direcciones */
+        overflow-x: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        /* Indicador visual de que se puede hacer scroll */
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 #f1f5f9;
     }
 
-    /* Asegurar que la tabla siga siendo desplazable horizontalmente */
-    .table-container {
-        padding: 10px;
+    /* Para webkit (Chrome, Safari en móvil) */
+    .table-container::-webkit-scrollbar {
+        height: 4px;
+        width: 4px;
     }
+
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 2px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 2px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* La tabla mantiene tamaño completo en teléfonos */
+    .marcaciones-table {
+        min-width: 900px; /* Ancho aún mayor para forzar scroll */
+        width: auto;
+    }
+
+    /* Mantiene legibilidad en la tabla */
+    .marcaciones-table thead th,
+    .marcaciones-table tbody td {
+        padding: 10px 12px;
+        font-size: 13px; /* Tamaño mínimo pero legible */
+        white-space: nowrap; /* Crucial: evita que el texto se envuelva */
+    }
+    .current-time {
+    display: none;
+}
 }
 
 /* Los siguientes estilos no estaban presentes en el HTML original para "Registro de Marcaciones"

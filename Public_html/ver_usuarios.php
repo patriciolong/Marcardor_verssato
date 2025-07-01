@@ -17,7 +17,6 @@ if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
     $search_query = trim($_GET['search']);
 }
 
-// Consulta corregida - removí el JOIN innecesario y agregué las comas faltantes
 $sql = "
     SELECT
         e.id_empleado,
@@ -103,7 +102,7 @@ if ($is_ajax_request) {
             line-height: 1.2;
             text-align: left; /* Alineado a la izquierda como los títulos de contenido */
 
-            margin-top: 10px;
+            margin-top: 5%;
         }
 
         /* Contenedor de la barra de búsqueda y el botón de exportar */
@@ -290,7 +289,12 @@ if ($is_ajax_request) {
         }
 
         /* Estilos responsivos para esta sección */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+            .content-area {
+                padding: 20px;
+                margin-right: 0px;
+            }
+
             .main-content h2 {
                 font-size: 2rem;
                 margin-bottom: 25px;
@@ -340,6 +344,15 @@ if ($is_ajax_request) {
         }
 
         @media (max-width: 480px) {
+             .content-area {
+                padding: 20px;
+                margin-right: 0px;
+            }
+
+            .welcome-section {
+                justify-content: space-between;
+                margin-bottom: 24px;
+            }
             .main-content h2 {
                 font-size: 1.75rem;
                 margin-bottom: 20px;
@@ -371,6 +384,10 @@ if ($is_ajax_request) {
             .table-container {
                 padding: 10px;
             }
+
+            .current-time {
+                display: none;
+            }
         }
 
         .current-time {
@@ -401,7 +418,6 @@ if ($is_ajax_request) {
                 justify-content: space-between;
                 margin-bottom: 24px;
                 gap: 40vh;
-            
             }
 
     </style>
@@ -530,7 +546,7 @@ if ($is_ajax_request) {
                                         const row = marcacionesTableBody.insertRow();
                                         row.style.cursor = 'pointer';
                                         row.onclick = () => {
-                                            window.location.href = `editar_usuario.php?nombre=${usuario.nombre}`;
+                                            window.location.href = `editar_usuario.php?usuario=${usuario.nombre}`;
                                         };
                                         row.innerHTML = `
                                             <td>${usuario.id_empleado }</td>

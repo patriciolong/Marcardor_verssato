@@ -399,6 +399,12 @@ if (isset($_GET['error_message'])) {
 
     /* === RESPONSIVE === */
     @media (max-width: 768px) {
+
+        .content-area {
+        padding: 20px;
+        margin-right: 0px;
+    }
+    
         .main-content {
             padding: 24px 20px;
         }

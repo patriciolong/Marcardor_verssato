@@ -6,18 +6,23 @@ include 'includes/funciones.php';
 verificarAutenticacion(); // Verifica si el usuario está logueado, si no, redirige
 
 $empleado_descriptor_facial = null;
+$local_empleado = null;
 if (isset($_SESSION['id_empleado'])) {
     $id_empleado_sesion = $_SESSION['id_empleado'];
-    $stmt = $mysqli->prepare("SELECT datos_faciales FROM empleados WHERE id_empleado = ?");
+    $stmt = $mysqli->prepare("SELECT datos_faciales, locall FROM empleados WHERE id_empleado = ?");
     if ($stmt) {
         $stmt->bind_param("i", $id_empleado_sesion);
         $stmt->execute();
-        $stmt->bind_result($descriptor_from_db);
+        $stmt->bind_result($descriptor_from_db, $local_from_db);
         $stmt->fetch();
         $stmt->close();
 
         if ($descriptor_from_db) {
             $empleado_descriptor_facial = json_decode($descriptor_from_db); // Decodifica el JSON a un array de PHP
+        }
+
+        if ($local_from_db) {
+            $local_empleado = $local_from_db; // Decodifica el JSON a un array de PHP
         }
     }
 }
@@ -131,7 +136,7 @@ $tipo_marcacion = isset($_GET['tipo']) ? $_GET['tipo'] : 'desconocido';
     align-items: center;
     gap: 12px;
     padding: 16px 32px;
-    background: linear-gradient(135deg, #64748b, #475569); /* Degradado gris similar a logout */
+    background:rgb(15, 23, 42); /* Degradado gris similar a logout */
     color: white;
     text-decoration: none;
     border-radius: 12px;
@@ -144,17 +149,13 @@ $tipo_marcacion = isset($_GET['tipo']) ? $_GET['tipo'] : 'desconocido';
 }
 
 .return-link::before {
-    content: '🔙'; /* Emoji para un look más moderno */
+    content: '⬅️'; /* Emoji para un look más moderno */
     font-size: 18px;
 }
 
 .return-link:hover {
-    background: linear-gradient(135deg, #475569, #334155); /* Degradado más oscuro al pasar el mouse */
+    background:rgb(21, 40, 85);
     transform: translateY(-2px);
-    box-shadow:
-        0 8px 24px rgba(100, 116, 139, 0.3),
-        0 4px 12px rgba(100, 116, 139, 0.2);
-    border-color: #94a3b8;
 }
 
 .return-link:active {
@@ -250,11 +251,13 @@ $tipo_marcacion = isset($_GET['tipo']) ? $_GET['tipo'] : 'desconocido';
             <canvas id="canvas"></canvas>
         </div>
         <p id="recognitionStatus">Cargando modelos de reconocimiento facial...</p>
-        <a href="dashboard.php" class="return-link">Volver al Dashboard</a>
+        <a href="dashboard.php" class="return-link">Volver</a>
     </div>
 
     <input type="hidden" id="empleado_descriptor_facial" value='<?php echo json_encode($empleado_descriptor_facial); ?>'>
     <input type="hidden" id="tipo_marcacion" value="<?php echo htmlspecialchars($tipo_marcacion); ?>">
+
+    <input type="hidden" id="local_empleado" value="<?php echo htmlspecialchars($local_empleado); ?>">
 
     <script defer src="assets/lib/face-api.min.js"></script>
     <script defer>
@@ -413,6 +416,9 @@ $tipo_marcacion = isset($_GET['tipo']) ? $_GET['tipo'] : 'desconocido';
 
 
             async function sendMarkingRequest(tipo, descriptor) {
+
+                const localEmpleado = document.getElementById('local_empleado')?.value || null;
+
                 if (currentStream) {
                     currentStream.getTracks().forEach(track => track.stop());
                     video.srcObject = null;
@@ -444,13 +450,17 @@ $tipo_marcacion = isset($_GET['tipo']) ? $_GET['tipo'] : 'desconocido';
                         tipo: tipo,
                         recognized: true,
                         ubicacion_latitud: latitud,
-                        ubicacion_longitud: longitud
+                        ubicacion_longitud: longitud,
+                        local_empleado: localEmpleado 
+                        
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert("¡Marcación de " + tipo + " registrada con éxito!");
+                        alert(
+                        `Marcación de ${tipo} registrada con éxito\n\n`
+                    );;
                         window.location.href = 'dashboard.php';
                     } else {
                         alert("Error al registrar la marcación: " + data.message);

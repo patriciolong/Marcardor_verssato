@@ -48,17 +48,12 @@ if (isset($_SESSION['id_empleado'])) {
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
             background: rgba(199, 218, 247, 0.38);
-            color: #334155;
+            color:rgb(0, 0, 0);
             line-height: 1.6;
             font-size: 14px;
             overflow-x: hidden;
         }
 
-        .page-wrapper {
-            display: flex;
-            min-height: 100vh;
-            position: relative;
-        }
 
         /* === SIDEBAR === */
         .sidebar {
@@ -85,7 +80,7 @@ if (isset($_SESSION['id_empleado'])) {
             bottom: 0;
             background: 
                 radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 70% 70%, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
+                radial-gradient(circle at 70% 70%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
             pointer-events: none;
         }
 
@@ -151,14 +146,13 @@ if (isset($_SESSION['id_empleado'])) {
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg rgba(255, 255, 255, 0.05));
+            background: rgba(12, 81, 183, 0.38);
+            transition: left 0.6s ease;
         }
 
         .main-nav a:hover {
             color: #ffffff;
             background: rgba(59, 130, 246, 0.15);
-            
-            
             box-shadow: 
                 0 4px 16px rgba(59, 130, 246, 0.1),
                 inset 0 1px 2px rgba(255, 255, 255, 0.1);
@@ -196,12 +190,11 @@ if (isset($_SESSION['id_empleado'])) {
 
         /* === CONTENT AREA === */
         .content-area {
-            margin-left: 280px;
+            margin-left: 310px;
+            margin-right: 30px;
             flex: 1;
-            background: rgba(199, 218, 247, 0.38);
-            min-height: 100vh;
+
             position: relative;
-            display: flex;
             justify-content: center; /* Centra horizontalmente */
             align-items: center; /* Centra verticalmente */
         }
@@ -213,13 +206,9 @@ if (isset($_SESSION['id_empleado'])) {
             left: 280px;
             right: 0;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
             z-index: 100;
         }
-
-        /* Contenido de ejemplo para mostrar el layout */
-       
-
+        
         .content-header {
             margin-bottom: 32px;
             padding-bottom: 24px;
@@ -240,73 +229,88 @@ if (isset($_SESSION['id_empleado'])) {
             font-weight: 400;
         }
 
-        /* === RESPONSIVE === */
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            
-            .content-area {
-                margin-left: 0;
-            }
-            
-            .main-content {
-                padding: 24px 20px;
-            }
+        /* === MOBILE HEADER BAR === */
+        .mobile-header-bar {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px; /* Altura de la barra superior */
+            background:rgb(15, 23, 42);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 999; /* Asegura que esté por encima de todo */
+            align-items: center; /* Centra verticalmente el contenido */
+            padding: 0 20px;
+            justify-content: space-between; /* Espacia el botón y el título */
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-            }
-            
-            .content-area::before {
-                left: 0;
-            }
-            
-            .main-content {
-                padding: 20px 16px;
-            }
-            
-            .content-title {
-                font-size: 24px;
-            }
-            
-            .app-title {
-                font-size: 24px;
-            }
-            
-            .main-nav a {
-                font-size: 14px;
-                padding: 14px 16px;
-            }
+        .mobile-header-bar .app-title {
+            color:rgb(255, 255, 255); /* Color del título en la barra superior */
+            font-size: 1.2rem;
+            margin-left: auto; /* Mueve el título a la derecha */
         }
+
+        .mobile-header-bar .app-title::before {
+            display: none; /* Oculta la barra de color al lado del título en la barra superior */
+        }
+
 
         /* === MOBILE MENU BUTTON === */
         .mobile-menu-btn {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
-            background: #0f172a;
-            color: white;
+            display: none; /* Oculto por defecto */
+            background: none;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            position: relative;
             cursor: pointer;
-            font-size: 18px;
-            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.3);
+            padding: 0;
+            z-index: 1002; /* Asegura que esté por encima de la barra */
         }
 
-        @media (max-width: 1024px) {
-            .mobile-menu-btn {
-                display: block;
-            }
+        .mobile-menu-btn span,
+        .mobile-menu-btn::before,
+        .mobile-menu-btn::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 3px;
+            background:rgb(255, 255, 255);; /* Color de las líneas del botón */
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .mobile-menu-btn::before {
+            top: 10px;
+        }
+
+        .mobile-menu-btn span {
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .mobile-menu-btn::after {
+            bottom: 10px;
+        }
+
+        /* Animación para el botón cuando el menú está abierto */
+        .mobile-menu-btn.active span {
+            background: transparent;
+        }
+
+        .mobile-menu-btn.active::before {
+            transform: translateX(-50%) rotate(45deg);
+            top: 50%;
+            margin-top: -1.5px;
+        }
+
+        .mobile-menu-btn.active::after {
+            transform: translateX(-50%) rotate(-45deg);
+            bottom: 50%;
+            margin-bottom: -1.5px;
         }
 
         /* === OVERLAY === */
@@ -320,12 +324,6 @@ if (isset($_SESSION['id_empleado'])) {
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
             backdrop-filter: blur(4px);
-        }
-
-        @media (max-width: 1024px) {
-            .sidebar-overlay.active {
-                display: block;
-            }
         }
 
         /* === LOADING STATE === */
@@ -344,9 +342,13 @@ if (isset($_SESSION['id_empleado'])) {
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-top: 3px solid #3b82f6;
             border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-       
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
         /* === FOCUS STATES === */
         .main-nav a:focus {
@@ -357,11 +359,91 @@ if (isset($_SESSION['id_empleado'])) {
         .mobile-menu-btn:focus {
             outline: 2px solid #3b82f6;
             outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1024px) {
+            .content-area {
+                padding: 20px;
+                margin-right: 0px;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .content-area {
+                margin-left: 0;
+            }
+            
+            /* No se necesita .main-content aquí si está en HTML */
+
+            .mobile-menu-btn {
+                display: block; /* Muestra el botón del menú en pantallas pequeñas */
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .mobile-header-bar {
+                display: flex; /* Muestra la barra superior en pantallas de teléfono */
+            }
+
+            body {
+                padding-top: 60px; /* Espacio para la barra superior */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 250px; /* Menú no cubre toda la pantalla */
+                box-shadow: 4px 0 24px rgba(15, 23, 42, 0.2);
+            }
+            
+            .content-area::before {
+                left: 0;
+            }
+            
+            /* No se necesita .main-content aquí si está en HTML */
+            
+            .content-title {
+                font-size: 24px;
+            }
+            
+            /* El .app-title de la barra superior ya tiene su propio estilo */
+            .app-title {
+                font-size: 24px;
+            }
+            
+            .main-nav a {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+
+            .mobile-header-bar {
+                display: flex; /* Muestra la barra superior en pantallas de teléfono */
+            }
+
+            body {
+                padding-top: 60px; /* Espacio para la barra superior */
+            }
         }
     </style>
 </head>
 <body>
-    <button class="mobile-menu-btn"></button>
+    <div class="mobile-header-bar">
+        <button class="mobile-menu-btn">
+            <span></span>
+        </button>
+        <div class="app-title">ClockIn</div>
+    </div>
+
     <div class="sidebar-overlay"></div>
     
     <div class="page-wrapper">
@@ -372,7 +454,7 @@ if (isset($_SESSION['id_empleado'])) {
             <nav class="main-nav">
                 <ul>
                     <li><a href="dashboard.php">Inicio</a></li>
-                    <?php if ($userRol == 'Administrador'): ?>
+                    <?php if (isset($userRol) && $userRol == 'Administrador'): ?>
                     <li><a href="ver_marcaciones.php">Reporteria</a></li>
                     <li><a href="registrar_empleado.php">Registrar Empleado</a></li>
                     <li><a href="ver_usuarios.php">Usuarios</a></li>
@@ -382,47 +464,55 @@ if (isset($_SESSION['id_empleado'])) {
             </nav>
         </aside>
 
-        
-
-     <main class="content-area">
+        <main class="content-area">
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
             const sidebar = document.querySelector('.sidebar');
             const overlay = document.querySelector('.sidebar-overlay');
-            const navLinks = document.querySelectorAll('.main-nav a');
-
+            
             // Toggle mobile menu
             mobileMenuBtn.addEventListener('click', function() {
                 sidebar.classList.toggle('open');
                 overlay.classList.toggle('active');
+                mobileMenuBtn.classList.toggle('active'); // Para la animación del botón
             });
 
             // Close menu when clicking overlay
             overlay.addEventListener('click', function() {
                 sidebar.classList.remove('open');
                 overlay.classList.remove('active');
+                mobileMenuBtn.classList.remove('active'); // Para la animación del botón
             });
 
-            // Add loading state to navigation links
-         
+            // Close menu when a navigation link is clicked (optional, but good for UX)
+            const navLinks = document.querySelectorAll('.main-nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (sidebar.classList.contains('open')) {
+                        sidebar.classList.remove('open');
+                        overlay.classList.remove('active');
+                        mobileMenuBtn.classList.remove('active');
+                    }
+                });
+            });
 
-            // Keyboard navigation
+            // Keyboard navigation (Escape key)
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     sidebar.classList.remove('open');
                     overlay.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
                 }
             });
 
-            // Auto-close mobile menu on resize
             window.addEventListener('resize', function() {
-                if (window.innerWidth > 1024) {
+                if (window.innerWidth > 1024) { //desktop breakpoint
                     sidebar.classList.remove('open');
                     overlay.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
                 }
             });
         });
     </script>
-
