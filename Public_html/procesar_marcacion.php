@@ -23,16 +23,32 @@ $ubicacion_latitud = (float)($input['ubicacion_latitud'] ?? 0.0);
 $ubicacion_longitud = (float)($input['ubicacion_longitud'] ?? 0.0);
 
 $local_empleado = $input['local_empleado'] ?? null;
-
+date_default_timezone_set('America/Guayaquil');
+$fecha_hora = date("Y-m-d-h-i-s");
 $rango_maximo = 5;
 
 $coordenadasLocales = [
 
 
 
-    'Prueba' => ['lat' => -2.895294110367375, 'lng' => -79.05536813830736],
-    'Centro' => ['lat' => -2.90000000, 'lng' => -78.97000000],
-    'Bolivar' => ['lat' => -2.91000000, 'lng' => -78.96000000]
+    'Monay' => ['lat' => -2.8973887, 'lng' => -78.9768732]
+
+
+
+
+
+
+
+    //'Centro' => ['lat' => -2.90000000, 'lng' => -78.97000000],
+    //'Bolivar' => ['lat' => -2.91000000, 'lng' => -78.96000000],
+     //'Batan' => ['lat' => -2.90000000, 'lng' => -78.97000000],
+    //'Rio' => ['lat' => -2.91000000, 'lng' => -78.96000000],
+     //'Norte' => ['lat' => -2.90000000, 'lng' => -78.97000000],
+    //'Malteria' => ['lat' => -2.91000000, 'lng' => -78.96000000],
+     //'Quicentro' => ['lat' => -2.90000000, 'lng' => -78.97000000],
+    //'Outlet' => ['lat' => -2.91000000, 'lng' => -78.96000000],
+     //'Recreo' => ['lat' => -2.90000000, 'lng' => -78.97000000],
+    //'Norte' => ['lat' => -2.91000000, 'lng' => -78.96000000]
 ];
 
 if (!$local_empleado || !isset($coordenadasLocales[$local_empleado])) {
@@ -88,11 +104,11 @@ try {
     $conn = $mysqli;
 
     // Modifica la consulta INSERT para incluir los nuevos campos
-    $stmt = $conn->prepare("INSERT INTO marcaciones (id_empleado, tipo, fecha_hora, ip_address, ubicacion_latitud, ubicacion_longitud) VALUES (?, ?, NOW(), ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO marcaciones (id_empleado, tipo, fecha_hora, ip_address, ubicacion_latitud, ubicacion_longitud) VALUES (?, ?, ?, ?, ?, ?)");
 
     // 'isssd' para id_empleado (int), tipo (string), ip_address (string), latitud (double), longitud (double)
     // Usa 'd' para DECIMAL en MySQL si estás bind_param, PHP lo envía como float/double
-    $stmt->bind_param("isssd", $idEmpleado, $tipoMarcacion, $ip_address, $ubicacion_latitud, $ubicacion_longitud);
+    $stmt->bind_param("issssd", $idEmpleado, $tipoMarcacion,$fecha_hora, $ip_address, $ubicacion_latitud, $ubicacion_longitud);
 
 
     if ($stmt->execute()) {

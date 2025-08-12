@@ -18,7 +18,7 @@ $id_usuario_a_editar = null;
 // Determinar el usuario a editar
 if (isset($_GET['usuario']) && !empty($_GET['usuario'])) {
     $nombre_usuario_url = trim($_GET['usuario']);
-    $stmt = $mysqli->prepare("SELECT id_empleado, nombre, apellido, email, rol, locall, estado FROM empleados WHERE nombre = ?");
+    $stmt = $mysqli->prepare("SELECT id_empleado, nombre, apellido, email, rol, locall, estado FROM empleados WHERE id_empleado = ?");
     if ($stmt) {
         $stmt->bind_param("s", $nombre_usuario_url);
         $stmt->execute();
@@ -387,7 +387,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_usuario'])) {
             <?php endif; ?>
 
             <?php if ($id_usuario_a_editar !== null): ?>
-                <form action="editar_usuario.php" method="POST" onsubmit="return confirmUpdate();">
+                <form action="editar_Usuario.php" method="POST" onsubmit="return confirmUpdate();">
                     <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($id_usuario_a_editar); ?>">
 
                     <label class="opciones" for="nombre">Nombre (opcional):</label>
@@ -410,9 +410,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_usuario'])) {
 
                     <label for="locall">Local:</label>
                     <select id="locall" name="locall">
-                        <option value="Centro" <?php echo ($locall_form == 'Centro') ? 'selected' : ''; ?>>Centro</option>
-                        <option value="Bolivar" <?php echo ($locall_form == 'Bolivar') ? 'selected' : ''; ?>>Bolivar</option>
-                        <option value="Prueba" <?php echo ($locall_form == 'Prueba') ? 'selected' : ''; ?>>Prueba</option>
+
+                    <option value="Bolivar" <?php echo ($locall_form == 'Bolivar') ? 'selected' : ''; ?>>Bolivar</option>
+                    <option value="Batan" <?php echo ($locall_form == 'Batan') ? 'selected' : ''; ?>>Batan</option>
+                        <option value="Centro" <?php echo ($locall_form == 'Centro') ? 'selected' : ''; ?>>Centro</option>     
+                        <option value="Monay" <?php echo ($locall_form == 'Monay') ? 'selected' : ''; ?>>Monay</option>
+                        <option value="Rio" <?php echo ($locall_form == 'Rio') ? 'selected' : ''; ?>>Mall del Rio</option>
+                        <option value="Malteria" <?php echo ($locall_form == 'Malteria') ? 'selected' : ''; ?>>Malteria</option>
+                        <option value="Norte" <?php echo ($locall_form == 'Norte') ? 'selected' : ''; ?>>Mall del Norte</option>
+                        <option value="Outlet" <?php echo ($locall_form == 'Outlet') ? 'selected' : ''; ?>>Outlet</option>
+                        <option value="Portal" <?php echo ($locall_form == 'Portal') ? 'selected' : ''; ?>>Portal</option>
+                        <option value="Quicentro" <?php echo ($locall_form == 'Quicentro') ? 'selected' : ''; ?>>Quicentro</option>
+                        <option value="Recreo" <?php echo ($locall_form == 'Recreo') ? 'selected' : ''; ?>>Recreo</option>
+
                     </select>
 
                     <label for="estado">Estado:</label>
