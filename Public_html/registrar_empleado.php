@@ -421,9 +421,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div class="form-group">
                     <label for="locall">Local:</label> <select id="locall" name="locall" required>
-                        <option value="Centro">Centro</option>
+                        <option value="Batan">Batan</option>
                         <option value="Bolivar">Bolivar</option>
-                        <option value="Prueba">Prueba</option>
+                        <option value="Centro">Centro</option>
+                        <option value="Monay">Monay</option>
+                        <option value="Rio">Mall de Rio</option>
+                        <option value="Malteria">Malteria</option>
+                        <option value="Norte">Mall del Norte</option>
+                        <option value="Outlet">Outlet</option>
+                        <option value="Portal">Portal</option>
+                        <option value="Quicentro">Quicentro</option>
+                        <option value="Recreo">Recreo</option>
                     </select>
                 </div>
 

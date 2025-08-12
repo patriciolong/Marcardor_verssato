@@ -468,7 +468,7 @@ if ($is_ajax_request) {
                         </tr>
                     <?php else: ?>
                         <?php foreach ($usuarios as $usuario): ?>
-                            <tr onclick="window.location.href='editar_usuario.php?usuario=<?php echo $usuario['nombre']; ?>'" 
+                            <tr onclick="window.location.href='editar_Usuario.php?usuario=<?php echo $usuario['id_empleado']; ?>'" 
                             style="cursor: pointer;">
                                     <td><?php echo htmlspecialchars($usuario['id_empleado']); ?></td>
                                     <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
@@ -546,7 +546,7 @@ if ($is_ajax_request) {
                                         const row = marcacionesTableBody.insertRow();
                                         row.style.cursor = 'pointer';
                                         row.onclick = () => {
-                                            window.location.href = `editar_usuario.php?usuario=${usuario.nombre}`;
+                                            window.location.href = `editar_Usuario.php?usuario=${usuario.nombre}`;
                                         };
                                         row.innerHTML = `
                                             <td>${usuario.id_empleado }</td>
